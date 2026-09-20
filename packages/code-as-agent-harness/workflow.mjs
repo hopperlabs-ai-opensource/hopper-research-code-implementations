@@ -158,7 +158,7 @@ export function releaseReport(csv, { priorities = ["P0", "P1"] } = {}) {
 		{
 			title: "Read the source",
 			detail: `Parsed ${rows.length} records. Quoted titles and embedded commas stay intact.`,
-			code: parseTickets.toString(),
+			code: "const rows = parseTickets(csv);\n// Validate columns, dates, priorities and statuses.\n// Preserve each source record number.",
 			artifact: rows,
 		},
 		{
@@ -171,7 +171,7 @@ export function releaseReport(csv, { priorities = ["P0", "P1"] } = {}) {
 		{
 			title: "Use current state",
 			detail: `Keep the latest dated record for each issue: ${latest.length} distinct issues. Conflicting updates on the same date stop the run.`,
-			code: latestTickets.toString(),
+			code: "const latest = latestTickets(rows);\n// One current record per issue.\n// Conflicting same-day updates throw.",
 			artifact: latest,
 		},
 		{
@@ -184,7 +184,7 @@ export function releaseReport(csv, { priorities = ["P0", "P1"] } = {}) {
 			title: "Verify before returning",
 			detail:
 				"Check identity, provenance, status and completeness. The result is returned only if all four checks pass.",
-			code: verifyReport.toString(),
+			code: "const checks = verifyReport(rows, report, priorities);\nif (!checks.every(check => check.passed)) {\n  throw Error('Report failed verification.');\n}\nreturn { report, checks };",
 			artifact: checks,
 		},
 	];

@@ -93,3 +93,10 @@ el("next").onclick = () => {
 	}
 };
 run();
+
+el("source").textContent =
+	parseTickets.toString() +
+	"\n\n" +
+	latestTickets.toString() +
+	"\n\n" +
+	verifyReport.toString();
