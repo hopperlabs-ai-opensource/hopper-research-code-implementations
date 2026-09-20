@@ -1,6 +1,6 @@
 {
   "schema": "hopper.research.examples.v1",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "files": [
     {
@@ -11,9 +11,9 @@
     },
     {
       "file": "code-as-agent-harness.html",
-      "sha256": "cbdb1f94ae945a0b45f9b284fea56f6ba3d2eddc76177494838e0a6e71727a94",
-      "bytes": 7257,
-      "csp": "default-src 'none'; script-src 'sha256-H+UxMX3i60QFGyxc3UupgJMU0iZ/A1Dkj7eLmkPOfnc='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
+      "sha256": "63ddb27efe8f06fad5ca696c4693089bc2832fd3940d9a25163d99d01e8bc92e",
+      "bytes": 7333,
+      "csp": "default-src 'none'; script-src 'sha256-w8Hn2fJmsuCsOOqB8CqgLRgHaDz4mIuFfZvP8LMuiRw='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
     }
   ]
 }

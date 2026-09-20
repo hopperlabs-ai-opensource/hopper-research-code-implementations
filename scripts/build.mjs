@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 const names=['attention-is-all-you-need','code-as-agent-harness'];
 await mkdir('dist',{recursive:true});
 const hash=s=>createHash('sha256').update(s).digest('base64');
-const manifest={schema:'hopper.research.examples.v1',version:'0.1.0',license:'MIT',files:[]};
+const manifest={schema:'hopper.research.examples.v1',version:'0.1.1',license:'MIT',files:[]};
 for(const name of names){
  const css=await readFile('scripts/demo.css','utf8');
  const core=(await readFile(`packages/${name}/index.mjs`,'utf8')).replaceAll('export function','function');
