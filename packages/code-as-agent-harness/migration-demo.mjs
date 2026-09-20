@@ -34,3 +34,22 @@ el("reset").onclick = () => {
 el("source").textContent =
 	migrateConfig.toString() + "\n\n" + verifyMigration.toString();
 el("reset").click();
+
+function labInspect() {
+	try {
+		const config = JSON.parse(el("config").value);
+		return { input: { config }, output: compareMigration(config) };
+	} catch (error) {
+		return { error: error.message };
+	}
+}
+function labRun(input) {
+	compareMigration(input.config);
+	el("config").value = JSON.stringify(input.config, null, 2);
+	run();
+	return labInspect();
+}
+function labReset() {
+	el("reset").click();
+	return labInspect();
+}

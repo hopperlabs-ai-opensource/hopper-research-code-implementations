@@ -100,3 +100,34 @@ el("source").textContent =
 	latestTickets.toString() +
 	"\n\n" +
 	verifyReport.toString();
+
+function labInspect() {
+	const input = {
+		csv: el("csv").value,
+		priorities: el("priority").value.split(","),
+	};
+	try {
+		const r = releaseReport(input.csv, { priorities: input.priorities });
+		return {
+			input,
+			output: {
+				report: r.report,
+				checks: r.checks,
+				draftChecks: r.draftChecks,
+			},
+		};
+	} catch (error) {
+		return { input, error: error.message };
+	}
+}
+function labRun(input) {
+	releaseReport(input.csv, { priorities: input.priorities });
+	el("csv").value = input.csv;
+	el("priority").value = [...input.priorities].sort().join(",");
+	run();
+	return labInspect();
+}
+function labReset() {
+	el("reset").click();
+	return labInspect();
+}

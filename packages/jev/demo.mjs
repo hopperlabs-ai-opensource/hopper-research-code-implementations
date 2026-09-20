@@ -77,3 +77,37 @@ el("apply").onclick = () => {
 	}
 };
 load();
+
+function labInspect() {
+	return {
+		input: {
+			scenario: selected.id,
+			answers: structuredClone(answers),
+			threshold: Number(el("threshold").value),
+		},
+		output: compareRouting(
+			selected.state,
+			answers,
+			Number(el("threshold").value),
+		),
+		fixture: true,
+	};
+}
+function labRun(input) {
+	const next = scenarios.find((s) => s.id === input.scenario);
+	if (!next) throw Error("Unknown scenario");
+	compareRouting(next.state, input.answers, input.threshold);
+	selected = next;
+	answers = structuredClone(input.answers);
+	el("scenario").value = selected.id;
+	el("threshold").value = input.threshold;
+	el("fixture").value = JSON.stringify(answers, null, 2);
+	render();
+	return labInspect();
+}
+function labReset() {
+	el("scenario").value = scenarios[0].id;
+	el("threshold").value = 0.8;
+	load();
+	return labInspect();
+}

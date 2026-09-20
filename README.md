@@ -69,3 +69,33 @@ No hosted CI workflows are installed; checks run locally.
 All browser examples work without network access. `?embed=1` hides the standalone
 navigation and introductory hero when an enclosing page supplies that context.
 The same source, controls, computations and validation run in either presentation.
+
+## A small codebase you can actually change
+
+| Start with | Read | Run |
+| --- | --- | --- |
+| Attention math | `packages/attention-is-all-you-need/index.mjs` | `node packages/attention-is-all-you-need/cli.mjs` |
+| Feature-based selection and blending | `packages/attention-is-all-you-need/recipes.mjs` | `node packages/attention-is-all-you-need/recipes-cli.mjs` |
+| Artifact + independent check | `packages/code-as-agent-harness/workflow.mjs` | `node packages/code-as-agent-harness/cli.mjs` |
+| Preserving meaning in a migration | `packages/code-as-agent-harness/migration.mjs` | `node packages/code-as-agent-harness/migration-cli.mjs` |
+| Typed answers + application policy | `packages/jev/index.mjs` | `node packages/jev/cli.mjs mixed` |
+
+The intended loop is: run a sample, read the small function, change one input,
+predict the result, and run the tests. No framework or model download is needed.
+`npm start` opens the standalone browser collection; `npm run check` tests the
+math, data transformations, rejected inputs and browser artifact build. See
+[adapt an example](docs/adapt-an-example.md) for a complete editable starting point.
+
+### Browser agent contract
+
+The Showcase playground and guided walkthrough bundle these same functions.
+`packages/lab-bridge/contracts.mjs` defines a bounded run-input schema for each
+lab. Those schemas are included in the generated artifact manifest. The bridge
+accepts only `inspect`, `run`, and `reset` from its exact parent window with its
+instance nonce. It rejects malformed data and never evaluates supplied code.
+The parent owns visitor enablement, exact-page pairing and revocation.
+
+Browser files remain dependency-free and offline. `?embed=1&mode=playground`
+selects the compact workspace presentation; the calculation code is unchanged.
+The build gates each HTML file at 128 KB raw / 24 KB gzip and records gzip/Brotli
+sizes. Readable source is retained; compression does not replace source clarity.

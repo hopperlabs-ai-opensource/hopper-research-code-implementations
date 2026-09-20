@@ -1,43 +1,398 @@
 {
   "schema": "hopper.research.examples.v1",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "files": [
     {
       "file": "index.html",
-      "sha256": "7e78104624077c21fc72c74a6570ed1e5d5067fcc5a632922bb3671cfd80827a",
-      "bytes": 13341,
-      "csp": "default-src 'none'; script-src 'sha256-qp9sQjxI0Q5Varqm8B/P6q8nJ2hFu36dPFcJaOuUc/U='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "14cd5eb6103aa662ebbb12e06df2a72c3ffae8785497ade14d5734d892c41ee3",
+      "bytes": 13673,
+      "gzipBytes": 5069,
+      "brotliBytes": 4103,
+      "csp": "default-src 'none'; script-src 'sha256-nGiQdS2RQOSWX2v9t094g5AE4G044WgWIIwfcF0lG9k='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "attention-is-all-you-need.html",
-      "sha256": "7adb0c47663c233023a6f51b3ef32d8f0550c1dda8dc4af4c9cd517a1602e20f",
-      "bytes": 26796,
-      "csp": "default-src 'none'; script-src 'sha256-CQki+ODloVcMyG25mBUtr3aUN4YV95lMjsyJyXKyDQQ='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "e2ee3072986b0783df3c8bffc1c00b1316df95bf26fea35fd9cf7a8ec56e2e40",
+      "bytes": 32047,
+      "gzipBytes": 10844,
+      "brotliBytes": 9221,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+              "type": "object",
+              "properties": {
+                "person": {
+                  "enum": [
+                    "Mira",
+                    "Noah",
+                    "Lena",
+                    "Omar",
+                    "Eva",
+                    "Jules"
+                  ]
+                },
+                "day": {
+                  "enum": [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday"
+                  ]
+                }
+              },
+              "required": [
+                "person",
+                "day"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "person": {
+            "enum": [
+              "Mira",
+              "Noah",
+              "Lena",
+              "Omar",
+              "Eva",
+              "Jules"
+            ]
+          },
+          "mode": {
+            "enum": [
+              "trained",
+              "uniform",
+              "untrained"
+            ]
+          }
+        },
+        "required": [
+          "records",
+          "person",
+          "mode"
+        ],
+        "additionalProperties": false
+      },
+      "csp": "default-src 'none'; script-src 'sha256-mTU/nX1EwC+YDrA0P+Jzw4RBNC9P7ChZA7Ij70AM1x0='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "attention-recipes.html",
-      "sha256": "ee27df8290d12e6985ad6d30daece436ced6b4efeaf0849d892d059a905ae34c",
-      "bytes": 24660,
-      "csp": "default-src 'none'; script-src 'sha256-Mil7pWElJAdlaSLGEJ9V3eoUSk+8Z/DKMBi5o1Fbado='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "eea0bb88a46b206caecdedeafd6242b0ea333b4b2ebe69a0f56fe107b4037ca5",
+      "bytes": 30041,
+      "gzipBytes": 10367,
+      "brotliBytes": 8799,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "features": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "type": "string",
+                  "maxLength": 80
+                }
+              },
+              "query": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 8,
+                "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "records": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "key": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 8,
+                      "items": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "value": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 10000
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "key",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "features",
+              "query",
+              "unit",
+              "records"
+            ],
+            "additionalProperties": false
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0.05,
+            "maximum": 2
+          }
+        },
+        "required": [
+          "data",
+          "temperature"
+        ],
+        "additionalProperties": false
+      },
+      "csp": "default-src 'none'; script-src 'sha256-hDmR2EcyxcA0IFHroqPffh6Rz9uuXjnPjQ87x1zhjnM='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "code-as-agent-harness.html",
-      "sha256": "62cfa1eefae9d16541f7279a3df2a0e910d55000ec0ce8c128779669050fccba",
-      "bytes": 26009,
-      "csp": "default-src 'none'; script-src 'sha256-LihqrtZr9/4/Jiw00Cp9lne3RRXo6jPMoJsEci0A4ik='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "b894e294faa2c6b373b385d90b6a56566785b41e0631661bbf8f849d2f8f84d7",
+      "bytes": 30824,
+      "gzipBytes": 10542,
+      "brotliBytes": 8978,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "csv": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          },
+          "priorities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "P0",
+                "P1"
+              ]
+            }
+          }
+        },
+        "required": [
+          "csv",
+          "priorities"
+        ],
+        "additionalProperties": false
+      },
+      "csp": "default-src 'none'; script-src 'sha256-arMCaHrhWO/LhNgIXNELa9GupK6SJJiDHdtrBCg1dU8='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "harness-migration.html",
-      "sha256": "57e5b37308ed1d44f93249ae7e9e6dc1a4b58821c447645eae3ed9469f917269",
-      "bytes": 15643,
-      "csp": "default-src 'none'; script-src 'sha256-R1HeAQwv7lXVBuWVkB4xvWgHodze6tx81aIJ6DpQvkc='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "808d73c67418dd3c3b010355cf79dc3b5339e8daf337e71bb0e3cf455e47d5f8",
+      "bytes": 20594,
+      "gzipBytes": 7060,
+      "brotliBytes": 5969,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "const": 1
+              },
+              "timeoutSeconds": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 3600
+              },
+              "retries": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "theme": {
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "projects": {
+                "type": "array",
+                "maxItems": 20,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,39}$"
+                    },
+                    "timeoutSeconds": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 3600
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "timeoutSeconds"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "version",
+              "timeoutSeconds",
+              "retries",
+              "theme",
+              "projects"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "config"
+        ],
+        "additionalProperties": false
+      },
+      "csp": "default-src 'none'; script-src 'sha256-0vhO9hwI4HbMX7gok4wh47mBn0J2FPsYpMYrIku0VtY='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "jev.html",
-      "sha256": "550c9db0582dcce7a72d2f7d176b1e03db6fdef5be74d51935c0eb7670bb5f3b",
-      "bytes": 19631,
-      "csp": "default-src 'none'; script-src 'sha256-tgOqjLTXSxbB3Zd9IlFbe+glR+nVg8g1HOZAkhrkaH8='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+      "sha256": "c8c44666d2c3b7947f7f84b49b583556f211cd0695cfa8e852fdaa415c185b7f",
+      "bytes": 25356,
+      "gzipBytes": 8766,
+      "brotliBytes": 7408,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "scenario": {
+            "enum": [
+              "invoice",
+              "negation",
+              "mixed"
+            ]
+          },
+          "threshold": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "answers": {
+            "type": "object",
+            "properties": {
+              "department": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "choice"
+                  },
+                  "choice": {
+                    "enum": [
+                      "billing",
+                      "technical",
+                      "sales"
+                    ]
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "probabilities": {
+                    "type": "object",
+                    "properties": {
+                      "billing": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "technical": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "sales": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    },
+                    "required": [
+                      "billing",
+                      "technical",
+                      "sales"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "type",
+                  "choice",
+                  "confidence",
+                  "probabilities"
+                ],
+                "additionalProperties": false
+              },
+              "urgent": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "noul"
+                  },
+                  "noul": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "noul"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "department",
+              "urgent"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "scenario",
+          "threshold",
+          "answers"
+        ],
+        "additionalProperties": false
+      },
+      "csp": "default-src 'none'; script-src 'sha256-y3wPGYVWg+WcF5jRMVSrZsNILgjUg7xroaHXaK7FN8I='; style-src 'sha256-86Gerkx5eMZaH+nh1c0MctUGG9SnHQjb3FKeVx57piw='; base-uri 'none'; form-action 'none'"
     }
   ]
 }

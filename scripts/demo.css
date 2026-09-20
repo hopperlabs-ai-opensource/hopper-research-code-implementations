@@ -21,3 +21,7 @@ body{background:#fafbf8}main{max-width:1180px;margin:auto;padding:40px 28px 64px
 blockquote { border-left: 3px solid #aec09e; margin: 22px 0; padding: 0 18px; line-height: 1.8; }
 @media(max-width:600px) { #probabilities { grid-template-columns: 1fr; } .flow { gap: 8px; } }
 .embedded .path-note { display: none; }
+
+.playground .walkthrough { display: none; }
+.playground .walkthrough:has(#editor), .playground .walkthrough:has(#probabilities) { display: block; }
+.playground .walkthrough:has(#editor) > :not(#editor) { display: none; }
