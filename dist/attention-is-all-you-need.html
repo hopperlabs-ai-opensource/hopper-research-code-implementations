@@ -1,0 +1,71 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0W7AXF9tY/U2LLhytUSqRXVGg8wyDavDj4IeTuTklDk='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"><title>attention-is-all-you-need · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;padding:24px;color:#26352c;background:#f7f8f4;font:16px/1.6 system-ui,sans-serif}h1{font-size:clamp(24px,4vw,34px);line-height:1.12;letter-spacing:-.035em;margin:12px 0}h2{font-size:19px;line-height:1.5}header p{color:#657161}.eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:#5a705e}label{display:grid;gap:6px;font-size:14px;font-weight:600}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:20px;margin:18px 0}.check{display:flex;align-items:center}input:not([type=checkbox]),select,button{font:inherit;border:1px solid #cbd4c6;border-radius:8px;padding:10px;background:white;color:inherit;max-width:100%}input[type=range]{padding:0;width:160px}input[type=checkbox]{width:18px;height:18px;accent-color:#36543d}button{cursor:pointer;font-weight:650;min-height:44px}button:hover{background:#eaf0e7}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #678259;outline-offset:3px}.note{font-size:13px;color:#5b685b}.steps{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:24px 0}.steps strong{font-size:14px;text-align:center}pre{background:#eef2e9;padding:16px;border-radius:10px;overflow:auto;font:13px/1.6 ui-monospace,monospace}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}caption{text-align:left;font-size:13px;margin:8px 0;color:#5b685b}td,th{padding:10px;text-align:left;border-bottom:1px solid #dbe1d7;white-space:nowrap}.result{font-size:20px;font-weight:600}.event{padding:20px;background:white;border:1px solid #dbe1d7;border-radius:12px}#error{color:#9b2828}li{margin:8px 0}details{margin-top:20px}summary{cursor:pointer;font-weight:600}@media(max-width:480px){body{padding:16px}.steps{gap:6px}.steps button{font-size:13px;padding:8px}.controls{gap:14px}}
+</style></head><body><header><span class="eyebrow">HOPPER RESEARCH · INTERACTIVE EXAMPLE</span><h1>Watch attention happen.</h1><p>One query. Three keys. A weighted mixture of values.</p></header>
+<div class="controls"><label>Query direction <input id="angle" type="range" min="0" max="180" value="45"><output id="angleValue"></output></label><label>Temperature <input id="temp" type="range" min="5" max="200" value="100"><output id="tempValue"></output></label><label class="check"><input id="causal" type="checkbox"> Mask positions after the selected query</label><label>Query position <select id="position"><option value="0">1</option><option value="1" selected>2</option><option value="2">3</option></select></label></div>
+<p class="note">Hand-chosen vectors, not learned language representations. Temperature is an exploration control; 1 uses the paper’s scaling.</p>
+<nav class="steps" aria-label="Calculation steps"><button type="button" id="previous">← Previous</button><strong id="stepLabel" aria-live="polite"></strong><button type="button" id="next">Next →</button></nav><p id="explanation"></p>
+<pre id="formula"></pre><div class="table-wrap"><table><caption>Keys and values with the selected query’s attention weights</caption><thead><tr><th>Position</th><th>Key K</th><th>Value V</th><th>Score</th><th>Weight</th></tr></thead><tbody id="rows"></tbody></table></div><p class="result" id="result" aria-live="polite"></p>
+<details><summary>Inspect all computed matrices</summary><pre id="matrices"></pre></details>
+<script>/** Original educational implementation of Vaswani et al., section 3.2.
+ * No learned parameters, training, tokenizer or benchmark reproduction. */
+function matrix(value, name) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 128 ||
+      !Array.isArray(value[0]) || value[0].length < 1 || value[0].length > 128 ||
+      value.some(row => !Array.isArray(row) || row.length !== value[0].length ||
+        row.some(n => !Number.isFinite(n) || Math.abs(n) > 1e6)))
+    throw new Error(`${name}: expected a finite rectangular matrix, at most 128 × 128`);
+}
+function attention(Q, K, V, { causal = false, temperature = 1 } = {}) {
+  matrix(Q, 'Q'); matrix(K, 'K'); matrix(V, 'V');
+  if (Q[0].length !== K[0].length || K.length !== V.length)
+    throw new Error('Q/K feature widths and K/V sequence lengths must match');
+  if (causal && Q.length !== K.length) throw new Error('Causal self-attention needs equal lengths');
+  if (!Number.isFinite(temperature) || temperature < 0.05 || temperature > 20)
+    throw new Error('Temperature must be between 0.05 and 20');
+  const scores = Q.map((q, i) => K.map((k, j) => causal && j > i ? -Infinity :
+    q.reduce((sum, x, d) => sum + x * k[d], 0) / Math.sqrt(q.length) / temperature));
+  const weights = scores.map(row => {
+    const max = Math.max(...row);
+    const exps = row.map(x => Math.exp(x - max));
+    const sum = exps.reduce((a, b) => a + b, 0);
+    return exps.map(x => x / sum);
+  });
+  const output = weights.map(row => V[0].map((_, d) =>
+    row.reduce((sum, weight, j) => sum + weight * V[j][d], 0)));
+  return { scores, weights, output };
+}
+function multiHeadAttention(heads, options = {}) {
+  if (!Array.isArray(heads) || !heads.length || heads.length > 16) throw new Error('Expected 1–16 projected heads');
+  const results = heads.map(({ Q, K, V }) => attention(Q, K, V, options));
+  if (results.some(r => r.output.length !== results[0].output.length)) throw new Error('Head query lengths differ');
+  // The caller supplies projected Q/K/V. A learned output projection is not included.
+  return { heads: results, concatenated: results[0].output.map((_, i) => results.flatMap(r => r.output[i])) };
+}
+function positionalEncoding(length, width) {
+  if (!Number.isInteger(length) || length < 1 || length > 128 || !Number.isInteger(width) || width < 2 || width > 128 || width % 2)
+    throw new Error('Expected length 1–128 and even width 2–128');
+  return Array.from({ length }, (_, pos) => Array.from({ length: width }, (_, d) =>
+    d % 2 ? Math.cos(pos / 10000 ** ((d - 1) / width)) : Math.sin(pos / 10000 ** (d / width))));
+}
+
+const $ = id => document.getElementById(id);
+let step=0;
+const stages=['1 / 4 · Query and keys','2 / 4 · Scale the dot products','3 / 4 · Normalize with softmax','4 / 4 · Mix the values'];
+const explanations=['Rotate the query and compare its direction with the keys. A dot product measures alignment.', 'Divide the query/key dot products by the square root of key width (2). Masked positions have score −∞.', 'Softmax turns scores into nonnegative weights that sum to one. Lower temperature makes the choice sharper.', 'Multiply each value by its weight and add the results. Attention returns a mixture, not a selected token.'];
+const formulas=['Q = [cos(angle), sin(angle)]; K = [[1,0], [0,1], [-1,0]]','scores = Q × transpose(K) / sqrt(2) / temperature','weights = softmax(scores)','output = weights × V'];
+function render(){
+ const angle=Number($('angle').value),t=Number($('temp').value)/100,pos=Number($('position').value);
+ const q=[Math.cos(angle*Math.PI/180),Math.sin(angle*Math.PI/180)];
+ const K=[[1,0],[0,1],[-1,0]],V=[[1,0],[0,1],[1,1]],Q=[q,q,q];
+ const r=attention(Q,K,V,{causal:$('causal').checked,temperature:t});
+ $('angleValue').textContent=angle+'°'; $('tempValue').textContent=t.toFixed(2);
+ $('stepLabel').textContent=stages[step]; $('explanation').textContent=explanations[step]; $('formula').textContent=formulas[step];
+ $('previous').disabled=step===0; $('next').disabled=step===3;
+ $('rows').replaceChildren(...K.map((k,j)=>{const tr=document.createElement('tr');
+ [String(j+1),JSON.stringify(k),JSON.stringify(V[j]),step>=1?(Number.isFinite(r.scores[pos][j])?r.scores[pos][j].toFixed(3):'masked'):'—',step>=2?(100*r.weights[pos][j]).toFixed(1)+'%':'—'].forEach(text=>{const td=document.createElement('td');td.textContent=text;tr.append(td);});
+ return tr;}));
+ $('result').textContent=step===3?'Output: ['+r.output[pos].map(n=>n.toFixed(4)).join(', ')+']':'Follow the steps to reveal the result.';
+ $('matrices').textContent=JSON.stringify({Q,K,V,...r},(key,value)=>value===-Infinity?'masked':value,2);
+}
+for(const id of ['angle','temp','causal','position']) $(id).addEventListener('input',render);
+$('previous').onclick=()=>{step=Math.max(0,step-1);render();}; $('next').onclick=()=>{step=Math.min(3,step+1);render();}; render();
+</script></body></html>

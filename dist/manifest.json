@@ -1,0 +1,19 @@
+{
+  "schema": "hopper.research.examples.v1",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    {
+      "file": "attention-is-all-you-need.html",
+      "sha256": "a0ac8014d9b7c4cff9b41abb3698608d5be8db489fc7543bc1a8d5c259165a51",
+      "bytes": 8719,
+      "csp": "default-src 'none'; script-src 'sha256-0W7AXF9tY/U2LLhytUSqRXVGg8wyDavDj4IeTuTklDk='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "file": "code-as-agent-harness.html",
+      "sha256": "cbdb1f94ae945a0b45f9b284fea56f6ba3d2eddc76177494838e0a6e71727a94",
+      "bytes": 7257,
+      "csp": "default-src 'none'; script-src 'sha256-H+UxMX3i60QFGyxc3UupgJMU0iZ/A1Dkj7eLmkPOfnc='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
+    }
+  ]
+}
