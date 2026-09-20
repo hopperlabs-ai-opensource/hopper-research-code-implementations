@@ -1,20 +1,46 @@
-# code-as-agent-harness
+# Code as Agent Harness · a verified release report
 
-Source paper: https://arxiv.org/abs/2605.18747v1
+A concrete example inspired by the survey's execution/artifact/verification patterns:
+turn an issue export into a report that can be checked against its source.
 
-```js
-import { runHarness } from './index.mjs';
-console.log(runHarness('3, 0, 2, 3, -1'));
-console.log(runHarness('0, 1', { repairBudget: 0 })); // passed: false
+## Try it
+
+From the repository root, run `npm run check`, then open
+`dist/code-as-agent-harness.html`. Edit the CSV, resolve a blocker, or introduce
+conflicting updates. Step through the actual code and artifacts.
+
+```sh
+node packages/code-as-agent-harness/cli.mjs
+node packages/code-as-agent-harness/cli.mjs tickets.csv
 ```
 
-Run tests from the repository root with `npm test`. Open the corresponding
-`dist/code-as-agent-harness.html` for the browser demo. Original implementation under MIT.
+The second command reads your export. Required columns:
+`id,title,status,priority,updated`. Dates use YYYY-MM-DD; statuses are open,
+in progress, reopened, closed, or resolved; priorities P0–P3. Quoted CSV fields
+are supported. Maximum 500 records / 100,000 characters. There are no uploads.
 
-The task is sorting distinct numeric values while preserving every input value.
-The intentionally flawed candidate filters by truthiness and loses zero. The
-verifier independently checks membership, completeness, uniqueness and order.
-One optional repair removes the filter. A failed run never reports success.
-`events` are immutable snapshots of the trace; the demo steps through them.
-This deterministic example illustrates selected mechanisms from the survey;
-it does not call an LLM, execute arbitrary source code or replicate a benchmark.
+## Reuse
+
+```js
+import { releaseReport } from './workflow.mjs';
+const { report, checks, trace } = releaseReport(csv, { priorities: ['P0', 'P1'] });
+```
+
+Latest date per issue wins. Conflicting records on the same date fail closed.
+Unresolved means not closed or resolved. Results preserve source-record numbers;
+the verifier checks source equality, uniqueness, policy and completeness.
+The quick draft intentionally filters priority alone; the same verifier rejects it.
+
+## Where an agent fits
+
+A model could select or compose these tools, explain a failed check, or request
+missing evidence. This browser example runs the tools deterministically. It does
+not call a model or run arbitrary generated code. Do not present it as a live AI
+agent. A production harness needs process isolation, permissions, bounded retries,
+durable artifacts and independent business rules. These checks do not establish
+that a source export is complete or a release is safe.
+
+The smaller sorting/repair kernel remains in `index.mjs` for comparison and tests;
+`workflow.mjs` is the public walkthrough. Paper:
+https://arxiv.org/abs/2605.18747v1 (a survey, not a benchmark to reproduce).
+Original example code: MIT.

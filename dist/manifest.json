@@ -1,19 +1,19 @@
 {
   "schema": "hopper.research.examples.v1",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "files": [
     {
       "file": "attention-is-all-you-need.html",
-      "sha256": "a0ac8014d9b7c4cff9b41abb3698608d5be8db489fc7543bc1a8d5c259165a51",
-      "bytes": 8719,
-      "csp": "default-src 'none'; script-src 'sha256-0W7AXF9tY/U2LLhytUSqRXVGg8wyDavDj4IeTuTklDk='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
+      "sha256": "842fcfaf3b58ed7e3e66869152a7485879d41e39fbd5325130961a208f89b27a",
+      "bytes": 18879,
+      "csp": "default-src 'none'; script-src 'sha256-ecJiXq+mRxE4W7E/QNiOKQOBG990Ew2/U6XrD9g2w6M='; style-src 'sha256-JKbZba9pVnGa0JXxEt4JQ5ncilB173nyNcQIM40+ASY='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "code-as-agent-harness.html",
-      "sha256": "63ddb27efe8f06fad5ca696c4693089bc2832fd3940d9a25163d99d01e8bc92e",
-      "bytes": 7333,
-      "csp": "default-src 'none'; script-src 'sha256-w8Hn2fJmsuCsOOqB8CqgLRgHaDz4mIuFfZvP8LMuiRw='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"
+      "sha256": "699d933bd6cf733cd509419ecdaa7b2b7a6f9b0a7af35af474c9929c321f6b2f",
+      "bytes": 18681,
+      "csp": "default-src 'none'; script-src 'sha256-7QDXBwWbwXEESScOqDx5tpIWuHsj+YAAyEXrXSVO+Mk='; style-src 'sha256-JKbZba9pVnGa0JXxEt4JQ5ncilB173nyNcQIM40+ASY='; base-uri 'none'; form-action 'none'"
     }
   ]
 }

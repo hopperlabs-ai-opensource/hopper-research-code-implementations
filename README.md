@@ -1,6 +1,6 @@
 # Hopper research code implementations
 
-Small, inspectable implementations paired with Hopper Research pages.
+Practical, inspectable walkthroughs paired with Hopper Research pages.
 Original MIT-licensed educational code. Paper copyright remains with its authors.
 No dependencies, model account, API key or installation step is required.
 
@@ -22,13 +22,14 @@ Each demo supports previous/next steps and inspection of actual computed values.
 - [Code as Agent Harness](packages/code-as-agent-harness): bounded execution,
   independent verification and a visible repair loop.
 
-These are deliberately small demonstrations, not a trained Transformer, a
-reproduction of paper benchmark results or a production agent runtime.
-The harness uses a deterministic candidate and repair, not an LLM.
+The attention walkthrough trains query/key embeddings and retrieves changing facts.
+The harness turns editable ticket CSV into a verified release-blocker report.
+These are not a full Transformer, benchmark reproductions or a production agent
+runtime. The report workflow runs deterministic tools, not an LLM.
 
 ## Reuse
 
-Import a package's `index.mjs` from JavaScript (Node, Bun, or a browser module).
+Import a package's `workflow.mjs` (walkthrough) or `index.mjs` (core) from JavaScript (Node, Bun, or a browser module).
 Each package documents its API, scope and source paper. Tests include mathematical
 oracles, masking, malformed inputs and failed verification with exhausted retries.
 

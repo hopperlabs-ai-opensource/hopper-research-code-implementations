@@ -1,46 +1,385 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-w8Hn2fJmsuCsOOqB8CqgLRgHaDz4mIuFfZvP8LMuiRw='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"><title>code-as-agent-harness · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;padding:24px;color:#26352c;background:#f7f8f4;font:16px/1.6 system-ui,sans-serif}h1{font-size:clamp(24px,4vw,34px);line-height:1.12;letter-spacing:-.035em;margin:12px 0}h2{font-size:19px;line-height:1.5}header p{color:#657161}.eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:#5a705e}label{display:grid;gap:6px;font-size:14px;font-weight:600}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:20px;margin:18px 0}.check{display:flex;align-items:center}input:not([type=checkbox]),select,button{font:inherit;border:1px solid #cbd4c6;border-radius:8px;padding:10px;background:white;color:inherit;max-width:100%}input[type=range]{padding:0;width:160px}input[type=checkbox]{width:18px;height:18px;accent-color:#36543d}button{cursor:pointer;font-weight:650;min-height:44px}button:hover{background:#eaf0e7}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #678259;outline-offset:3px}.note{font-size:13px;color:#5b685b}.steps{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:24px 0}.steps strong{font-size:14px;text-align:center}pre{background:#eef2e9;padding:16px;border-radius:10px;overflow:auto;font:13px/1.6 ui-monospace,monospace}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}caption{text-align:left;font-size:13px;margin:8px 0;color:#5b685b}td,th{padding:10px;text-align:left;border-bottom:1px solid #dbe1d7;white-space:nowrap}.result{font-size:20px;font-weight:600}.event{padding:20px;background:white;border:1px solid #dbe1d7;border-radius:12px}#error{color:#9b2828}li{margin:8px 0}details{margin-top:20px}summary{cursor:pointer;font-weight:600}@media(max-width:480px){body{padding:16px}.steps{gap:6px}.steps button{font-size:13px;padding:8px}.controls{gap:14px}}
-</style></head><body><header><span class="eyebrow">HOPPER RESEARCH · INTERACTIVE EXAMPLE</span><h1>A result has to earn its way out.</h1><p>Trace a small program through execution, verification and repair.</p></header>
-<section aria-label="Task input"><label>Numbers to sort and deduplicate <input id="input" value="3, 0, 2, 3, -1" maxlength="1024"></label><div class="controls"><label class="check"><input id="bug" type="checkbox" checked> Inject the zero-dropping bug</label><label>Repair budget <select id="budget"><option value="1">One repair</option><option value="0">No repairs</option></select></label><button type="button" id="run">Run example</button></div></section>
-<p class="note">Deterministic teaching harness. No AI model, credentials, network requests or arbitrary code execution.</p><p id="error" role="alert"></p>
-<nav class="steps" aria-label="Execution steps"><button type="button" id="previous">← Previous</button><strong id="stepLabel" aria-live="polite"></strong><button type="button" id="next">Next →</button></nav>
-<section class="event"><span class="eyebrow" id="phase"></span><h2 id="detail">Preparing the example…</h2><pre id="artifact"></pre></section><ol id="timeline"></ol><details><summary>Inspect the complete trace</summary><pre id="trace"></pre></details>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-7QDXBwWbwXEESScOqDx5tpIWuHsj+YAAyEXrXSVO+Mk='; style-src 'sha256-JKbZba9pVnGa0JXxEt4JQ5ncilB173nyNcQIM40+ASY='; base-uri 'none'; form-action 'none'"><title>code-as-agent-harness · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;color:#263b31;background:#fff;font:15px/1.65 system-ui,sans-serif}main{padding:28px}h1,h2,h3,p{margin-top:0}h2{font-size:23px;line-height:1.25;letter-spacing:-.025em}h3{font-size:17px;line-height:1.35}p{color:#596a60}.eyebrow{display:block;font-size:11px;letter-spacing:.13em;font-weight:750;color:#627a67;margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}.panel{min-width:0}.output{background:#f2f6ef;border:1px solid #d9e3d5;border-radius:12px;padding:23px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}label{display:grid;gap:6px;font-size:13px;font-weight:650}button,select,textarea{font:inherit;color:inherit;border:1px solid #cdd8cf;background:#fff;border-radius:7px;padding:9px 12px;max-width:100%}button{cursor:pointer;font-size:13px;font-weight:650;min-height:40px}button.primary{background:#305d47;border-color:#305d47;color:#fff}button:hover{filter:brightness(.95)}button:disabled{opacity:.45;cursor:default}button[aria-pressed=true]{background:#dce9dc;border-color:#65846b}textarea{resize:vertical;width:100%;min-height:252px;font:12px/1.8 ui-monospace,monospace;white-space:pre}select{min-height:42px}textarea:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.note{font-size:12px;line-height:1.65;color:#627267}.result{font-size:30px;letter-spacing:-.035em;font-weight:700;line-height:1.2;color:#254f39;margin:12px 0 16px}.ticket{padding:14px 0;border-top:1px solid #d6e0d1}.ticket strong{display:block;font-size:14px}.ticket small{font-size:12px;color:#596a60}.badge{display:inline-block;padding:3px 8px;font-size:11px;border-radius:5px;background:#e4ebdc;color:#3d5b40;margin-right:5px}.checks{padding:0;list-style:none;font-size:12px;line-height:1.7}.checks li{margin:8px 0}.checks .fail{color:#8a492a}.checks .pass{color:#315d40}#error{color:#963d26;font-weight:600}#error:empty{display:none}.walkthrough{margin-top:28px;border-top:1px solid #dde5d9;padding-top:24px}.steps{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.steps strong{font-size:13px;text-align:center}.trace-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}pre{margin:12px 0;background:#f3f5f0;border:1px solid #e0e6da;border-radius:8px;padding:16px;overflow:auto;font:12px/1.8 ui-monospace,monospace;max-height:360px}details{margin:18px 0}summary{cursor:pointer;font-weight:650;font-size:13px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #d8e1d3}th{font-weight:600;color:#596a60}progress{display:block;width:100%;height:9px;accent-color:#527a53}progress::-webkit-progress-bar{background:#dce5d5;border-radius:4px}progress::-webkit-progress-value{background:#527a53;border-radius:4px}.record{display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:18px;border-bottom:1px solid #e2e7dd;padding:13px 0}.record label{display:block}.record select{width:100%}.metric{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0}.metric strong{font-size:20px;display:block;color:#305840}.metric span{font-size:12px}.output[aria-busy=true]{opacity:.6}.formula{font-size:14px;color:#304d3b}.training{margin-top:18px;border-top:1px solid #d6e0d1;padding-top:16px}@media(max-width:700px){main{padding:18px}.lab-grid,.trace-grid{grid-template-columns:1fr;gap:20px}h2{font-size:21px}.output{padding:18px}.steps{gap:7px}.steps button{padding:8px;font-size:12px}.result{font-size:27px}textarea{min-height:230px}}
+</style></head><body><main>
+<div class="lab-grid">
+<section class="panel" aria-labelledby="input-title"><span class="eyebrow">01 · THE INPUT</span><h2 id="input-title">What is blocking this release?</h2><p>A ticket export contains old updates, resolved bugs, and a reopened critical issue. A priority filter alone produces the wrong report.</p><label for="csv">Ticket export · edit the CSV, then run</label><textarea id="csv" spellcheck="false" maxlength="100000"></textarea><div class="toolbar"><label>Include<select id="priority"><option value="P0,P1">P0 + P1 blockers</option><option value="P0">P0 critical only</option></select></label><button class="primary" type="button" id="run">Build verified report →</button></div><div class="toolbar" aria-label="Try a scenario"><button id="resolve" type="button">Resolve a blocker</button><button id="conflict" type="button">Introduce a conflict</button><button id="reset" type="button">Reset example</button></div><p class="note">Fictional tickets; real parsing, deduplication and checks. Everything stays in this browser. This runs the harness tools, not a live AI agent.</p><p id="error" role="alert"></p></section>
+<section class="panel output" aria-labelledby="output-title"><span class="eyebrow">02 · THE RESULT</span><h2 id="output-title">Release-blocker report</h2><p id="result" class="result" aria-live="polite"></p><div id="report"></div><h3>Checks before returning the result</h3><ul id="checks" class="checks"></ul><details><summary>What the quick draft got wrong</summary><p class="note">The first attempt just filters by priority. The verifier catches what it missed.</p><ul id="draft-checks" class="checks"></ul></details><details><summary>Verified report as JSON</summary><pre id="json"></pre></details></section>
+</div>
+<section class="walkthrough" aria-labelledby="walk-title"><span class="eyebrow">03 · FOLLOW THE EXECUTION</span><h2 id="walk-title">From a plausible answer to a checked artifact.</h2><nav class="steps" aria-label="Execution steps"><button type="button" id="previous">← Previous</button><strong id="stepLabel" aria-live="polite"></strong><button type="button" id="next">Next →</button></nav><h3 id="phase"></h3><p id="detail"></p><div class="trace-grid"><div><span class="eyebrow">CODE FOR THIS STEP</span><pre id="code"></pre></div><div><span class="eyebrow">ACTUAL ARTIFACT</span><pre id="artifact"></pre></div></div></section>
+</main>
 <script>/** An executable teaching example, inspired by Ning et al. No LLM or eval. */
 function parseInput(text) {
-  if (typeof text !== 'string' || text.length > 1024 || !text.trim()) throw new Error('Enter 1–64 comma-separated numbers');
-  const parts = text.split(',');
-  if (parts.length > 64 || parts.some(x => !x.trim() || !Number.isFinite(Number(x)) || Math.abs(Number(x)) > 1e6))
-    throw new Error('Enter 1–64 finite numbers between -1000000 and 1000000');
-  return parts.map(Number);
+	if (typeof text !== "string" || text.length > 1024 || !text.trim())
+		throw new Error("Enter 1–64 comma-separated numbers");
+	const parts = text.split(",");
+	if (
+		parts.length > 64 ||
+		parts.some(
+			(x) =>
+				!x.trim() || !Number.isFinite(Number(x)) || Math.abs(Number(x)) > 1e6,
+		)
+	)
+		throw new Error("Enter 1–64 finite numbers between -1000000 and 1000000");
+	return parts.map(Number);
 }
 function verify(input, output) {
-  return Array.isArray(output) && output.every(Number.isFinite) &&
-    output.length === new Set(input).size && new Set(output).size === output.length &&
-    input.every(x => output.includes(x)) && output.every(x => input.includes(x)) &&
-    output.every((x, i) => i === 0 || output[i - 1] < x);
+	return (
+		Array.isArray(output) &&
+		output.every(Number.isFinite) &&
+		output.length === new Set(input).size &&
+		new Set(output).size === output.length &&
+		input.every((x) => output.includes(x)) &&
+		output.every((x) => input.includes(x)) &&
+		output.every((x, i) => i === 0 || output[i - 1] < x)
+	);
 }
 function runHarness(text, { injectBug = true, repairBudget = 1 } = {}) {
-  if (![0, 1].includes(repairBudget)) throw new Error('Repair budget must be 0 or 1');
-  const input = parseInput(text), events = [];
-  const record = (phase, detail, output = null) => events.push({ step: events.length + 1, phase, detail, output: output === null ? null : [...output] });
-  record('Plan', 'Return every distinct input number exactly once, in ascending numeric order.');
-  record('Execute', injectBug ? 'Candidate: unique(input.filter(Boolean)).sort(numeric). The truthiness filter loses zero.' : 'Candidate: unique(input).sort(numeric).');
-  let output = [...new Set(injectBug ? input.filter(Boolean) : input)].sort((a, b) => a - b);
-  record('Observe', 'Store the candidate output as an inspectable artifact.', output);
-  let passed = verify(input, output);
-  record('Verify', passed ? 'PASS: membership, uniqueness, completeness and order hold.' : 'FAIL: output does not preserve every distinct input value.', output);
-  if (!passed && repairBudget > 0) {
-    record('Repair', 'Bounded repair: remove the truthiness filter. Retain zero.');
-    output = [...new Set(input)].sort((a, b) => a - b);
-    passed = verify(input, output);
-    record('Verify', passed ? 'PASS after repair.' : 'FAIL after repair.', output);
-  }
-  record(passed ? 'Done' : 'Stopped', passed ? 'Return the verified result.' : 'No verified result; repair budget exhausted.', output);
-  return { input, output, passed, events };
+	if (![0, 1].includes(repairBudget))
+		throw new Error("Repair budget must be 0 or 1");
+	const input = parseInput(text),
+		events = [];
+	const record = (phase, detail, output = null) =>
+		events.push({
+			step: events.length + 1,
+			phase,
+			detail,
+			output: output === null ? null : [...output],
+		});
+	record(
+		"Plan",
+		"Return every distinct input number exactly once, in ascending numeric order.",
+	);
+	record(
+		"Execute",
+		injectBug
+			? "Candidate: unique(input.filter(Boolean)).sort(numeric). The truthiness filter loses zero."
+			: "Candidate: unique(input).sort(numeric).",
+	);
+	let output = [...new Set(injectBug ? input.filter(Boolean) : input)].sort(
+		(a, b) => a - b,
+	);
+	record(
+		"Observe",
+		"Store the candidate output as an inspectable artifact.",
+		output,
+	);
+	let passed = verify(input, output);
+	record(
+		"Verify",
+		passed
+			? "PASS: membership, uniqueness, completeness and order hold."
+			: "FAIL: output does not preserve every distinct input value.",
+		output,
+	);
+	if (!passed && repairBudget > 0) {
+		record(
+			"Repair",
+			"Bounded repair: remove the truthiness filter. Retain zero.",
+		);
+		output = [...new Set(input)].sort((a, b) => a - b);
+		passed = verify(input, output);
+		record(
+			"Verify",
+			passed ? "PASS after repair." : "FAIL after repair.",
+			output,
+		);
+	}
+	record(
+		passed ? "Done" : "Stopped",
+		passed
+			? "Return the verified result."
+			: "No verified result; repair budget exhausted.",
+		output,
+	);
+	return { input, output, passed, events };
 }
 
-const $=id=>document.getElementById(id); let run=null,index=0;
-function render(){ if(!run)return; const e=run.events[index]; $('stepLabel').textContent=`${index+1} / ${run.events.length}`; $('phase').textContent=e.phase; $('detail').textContent=e.detail; $('artifact').textContent=e.output===null?'Input: '+JSON.stringify(run.input):'Artifact: '+JSON.stringify(e.output); $('previous').disabled=index===0; $('next').disabled=index===run.events.length-1;
- $('timeline').replaceChildren(...run.events.slice(0,index+1).map(e=>{const li=document.createElement('li');li.textContent=e.phase+' — '+e.detail;return li;})); $('trace').textContent=JSON.stringify(run,null,2); }
-function start(){try{run=runHarness($('input').value,{injectBug:$('bug').checked,repairBudget:Number($('budget').value)});index=0;$('error').textContent='';render();}catch(error){$('error').textContent=error.message;run=null;$('previous').disabled=true;$('next').disabled=true;$('stepLabel').textContent='No run';$('phase').textContent='Invalid input';$('detail').textContent='Fix the input and run again.';$('artifact').textContent='';$('timeline').replaceChildren();$('trace').textContent='';}}
-$('run').onclick=start; $('input').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();start();}}; $('previous').onclick=()=>{index=Math.max(0,index-1);render();};$('next').onclick=()=>{index=Math.min(run.events.length-1,index+1);render();};start();
-</script></body></html>
+/** Practical, bounded data workflow. No LLM is called by this local example. */
+const sampleTickets = `id,title,status,priority,updated
+APP-101,"Sign in fails, Safari only",open,P1,2026-09-14
+APP-102,Export drops the final row,open,P1,2026-09-15
+APP-103,Help text typo,open,P3,2026-09-15
+APP-101,"Sign in fails, Safari only",resolved,P1,2026-09-16
+APP-104,Mobile save loses edits,reopened,P0,2026-09-17
+APP-105,Keyboard focus disappears,in progress,P1,2026-09-17
+APP-106,Settings panel spacing,closed,P2,2026-09-17`;
+function parseTickets(csv) {
+	if (typeof csv !== "string" || csv.length > 100000)
+		throw Error("Paste a CSV export smaller than 100 KB.");
+	const records = [];
+	let fields = [],
+		field = "",
+		quoted = false,
+		endedQuote = false;
+	for (let i = 0; i <= csv.length; i++) {
+		const c = i === csv.length ? "\n" : csv[i];
+		if (quoted) {
+			if (c === '"') {
+				if (csv[i + 1] === '"') {
+					field += '"';
+					i++;
+				} else {
+					quoted = false;
+					endedQuote = true;
+				}
+			} else field += c;
+			continue;
+		}
+		if (endedQuote && c !== "," && c !== "\n" && c !== "\r")
+			throw Error("Unexpected text after a quoted CSV field.");
+		if (c === '"') {
+			if (field) throw Error("Quote must start a CSV field.");
+			quoted = true;
+		} else if (c === "," || c === "\n") {
+			fields.push(field);
+			field = "";
+			endedQuote = false;
+			if (c === "\n") {
+				if (fields.some((x) => x.trim())) records.push(fields);
+				fields = [];
+			}
+		} else if (c !== "\r") field += c;
+	}
+	if (quoted) throw Error("A quoted CSV field was not closed.");
+	if (records.length < 2 || records.length > 501)
+		throw Error("Provide a header and 1–500 issue records.");
+	if (records[0].join(",").toLowerCase() !== "id,title,status,priority,updated")
+		throw Error("Columns must be id,title,status,priority,updated.");
+	const rows = records.slice(1).map((values, i) => {
+		if (values.length !== 5)
+			throw Error(`Record ${i + 1}: expected five columns.`);
+		const [id, title, rawStatus, rawPriority, updated] = values.map((x) =>
+			x.trim(),
+		);
+		const status = rawStatus.toLowerCase().replaceAll(" ", "_"),
+			priority = rawPriority.toUpperCase();
+		if (!/^[\w-]{1,40}$/.test(id) || !title || title.length > 240)
+			throw Error(`Record ${i + 1}: invalid ID or title.`);
+		if (
+			!["open", "in_progress", "reopened", "closed", "resolved"].includes(
+				status,
+			) ||
+			!/^P[0-3]$/.test(priority)
+		)
+			throw Error(`Record ${i + 1}: use a known status and priority P0–P3.`);
+		if (
+			!/^\d{4}-\d{2}-\d{2}$/.test(updated) ||
+			!Number.isFinite(Date.parse(updated)) ||
+			new Date(updated).toISOString().slice(0, 10) !== updated
+		)
+			throw Error(`Record ${i + 1}: use a valid YYYY-MM-DD date.`);
+		return { id, title, status, priority, updated, record: i + 1 };
+	});
+	return rows;
+}
+function latestTickets(rows) {
+	const latest = new Map();
+	for (const row of rows) {
+		const old = latest.get(row.id);
+		if (
+			old &&
+			old.updated === row.updated &&
+			(old.status !== row.status ||
+				old.priority !== row.priority ||
+				old.title !== row.title)
+		)
+			throw Error(
+				`Conflicting records for ${row.id} on ${row.updated}. Resolve the conflict before publishing.`,
+			);
+		if (!old || old.updated < row.updated) latest.set(row.id, row);
+	}
+	return [...latest.values()];
+}
+function verifyReport(rows, report, priorities) {
+	const latest = latestTickets(rows),
+		ids = report.map((row) => row.id);
+	const checks = [
+		{ name: "One entry per issue", passed: new Set(ids).size === ids.length },
+		{
+			name: "Every entry cites its latest source record",
+			passed: report.every((item) =>
+				latest.some((row) =>
+					["id", "title", "status", "priority", "updated", "record"].every(
+						(key) => row[key] === item[key],
+					),
+				),
+			),
+		},
+		{
+			name: "Only unresolved issues at the chosen priorities",
+			passed: report.every(
+				(item) =>
+					!["resolved", "closed"].includes(item.status) &&
+					priorities.includes(item.priority),
+			),
+		},
+		{
+			name: "No qualifying issue is missing",
+			passed: latest.every(
+				(row) =>
+					["closed", "resolved"].includes(row.status) ||
+					!priorities.includes(row.priority) ||
+					ids.includes(row.id),
+			),
+		},
+	];
+	return checks;
+}
+function releaseReport(csv, { priorities = ["P0", "P1"] } = {}) {
+	if (
+		!Array.isArray(priorities) ||
+		!priorities.length ||
+		priorities.some((p) => !/^P[0-3]$/.test(p)) ||
+		new Set(priorities).size !== priorities.length
+	)
+		throw Error("Choose distinct priorities P0–P3.");
+	const rows = parseTickets(csv),
+		latest = latestTickets(rows);
+	const draft = rows.filter((row) => priorities.includes(row.priority));
+	const draftChecks = verifyReport(rows, draft, priorities);
+	const report = latest
+		.filter(
+			(row) =>
+				!["resolved", "closed"].includes(row.status) &&
+				priorities.includes(row.priority),
+		)
+		.sort(
+			(a, b) =>
+				a.priority.localeCompare(b.priority) || a.id.localeCompare(b.id),
+		);
+	const checks = verifyReport(rows, report, priorities);
+	if (!checks.every((check) => check.passed))
+		throw Error("Report failed verification.");
+	const trace = [
+		{
+			title: "Read the source",
+			detail: `Parsed ${rows.length} records. Quoted titles and embedded commas stay intact.`,
+			code: parseTickets.toString(),
+			artifact: rows,
+		},
+		{
+			title: "Check a quick draft",
+			detail:
+				"Filtering by priority alone includes stale or resolved records. The same verifier checks this draft.",
+			code: "const draft = rows.filter(row => priorities.includes(row.priority));\nverifyReport(rows, draft, priorities);",
+			artifact: { draft, draftChecks },
+		},
+		{
+			title: "Use current state",
+			detail: `Keep the latest dated record for each issue: ${latest.length} distinct issues. Conflicting updates on the same date stop the run.`,
+			code: latestTickets.toString(),
+			artifact: latest,
+		},
+		{
+			title: "Build the report",
+			detail: `Choose unresolved ${priorities.join(" / ")} issues. Each result retains its source-record number.`,
+			code: "const report = latest.filter(row =>\n  !['resolved', 'closed'].includes(row.status) &&\n  priorities.includes(row.priority)\n);",
+			artifact: report,
+		},
+		{
+			title: "Verify before returning",
+			detail:
+				"Check identity, provenance, status and completeness. The result is returned only if all four checks pass.",
+			code: verifyReport.toString(),
+			artifact: checks,
+		},
+	];
+	return { rows, latest, draft, draftChecks, report, checks, trace };
+}
+
+const el = (id) => document.getElementById(id);
+let execution,
+	step = 0;
+el("csv").value = sampleTickets;
+function checksInto(id, checks) {
+	el(id).replaceChildren(
+		...checks.map((check) => {
+			const li = document.createElement("li");
+			li.className = check.passed ? "pass" : "fail";
+			li.textContent = `${check.passed ? "✓" : "×"} ${check.name}`;
+			return li;
+		}),
+	);
+}
+function showStep() {
+	const item = execution.trace[step];
+	el("stepLabel").textContent = `${step + 1} of ${execution.trace.length}`;
+	el("phase").textContent = item.title;
+	el("detail").textContent = item.detail;
+	el("code").textContent = item.code;
+	el("artifact").textContent = JSON.stringify(item.artifact, null, 2);
+	el("previous").disabled = step === 0;
+	el("next").disabled = step === execution.trace.length - 1;
+}
+function run() {
+	el("error").textContent = "";
+	try {
+		execution = releaseReport(el("csv").value, {
+			priorities: el("priority").value.split(","),
+		});
+		step = 0;
+		el("result").textContent =
+			`${execution.report.length} unresolved ${execution.report.length === 1 ? "blocker" : "blockers"}`;
+		el("report").replaceChildren(
+			...execution.report.map((ticket) => {
+				const div = document.createElement("div");
+				div.className = "ticket";
+				const title = document.createElement("strong");
+				title.textContent = `${ticket.priority} · ${ticket.id} — ${ticket.title}`;
+				const source = document.createElement("small");
+				source.textContent = `${ticket.status.replace("_", " ")} · latest ${ticket.updated} · source record ${ticket.record}`;
+				div.append(title, source);
+				return div;
+			}),
+		);
+		checksInto("checks", execution.checks);
+		checksInto("draft-checks", execution.draftChecks);
+		el("json").textContent = JSON.stringify(execution.report, null, 2);
+		showStep();
+	} catch (error) {
+		el("error").textContent = error.message;
+		el("result").textContent = "Report withheld";
+		el("report").replaceChildren();
+		el("checks").replaceChildren();
+		el("draft-checks").replaceChildren();
+		el("json").textContent = "No verified result.";
+		el("phase").textContent = "Source needs attention";
+		el("detail").textContent =
+			"The harness stops instead of guessing which record is true. Fix the input and run again.";
+		el("code").textContent = "";
+		el("artifact").textContent = error.message;
+		el("stepLabel").textContent = "Stopped";
+		el("previous").disabled = true;
+		el("next").disabled = true;
+	}
+}
+el("run").onclick = run;
+el("reset").onclick = () => {
+	el("csv").value = sampleTickets;
+	el("priority").value = "P0,P1";
+	run();
+};
+el("resolve").onclick = () => {
+	el("csv").value =
+		sampleTickets + "\nAPP-104,Mobile save loses edits,resolved,P0,2026-09-18";
+	run();
+};
+el("conflict").onclick = () => {
+	el("csv").value =
+		sampleTickets + "\nAPP-104,Mobile save loses edits,resolved,P0,2026-09-17";
+	run();
+};
+el("previous").onclick = () => {
+	if (step > 0) {
+		step--;
+		showStep();
+	}
+};
+el("next").onclick = () => {
+	if (execution && step < execution.trace.length - 1) {
+		step++;
+		showStep();
+	}
+};
+run();
+
+new ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);</script></body></html>

@@ -1,71 +1,380 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-0W7AXF9tY/U2LLhytUSqRXVGg8wyDavDj4IeTuTklDk='; style-src 'sha256-6XoXxlID4Fj3wecfZtVNz6duLNbY644+XmOrsT/i5lc='; base-uri 'none'; form-action 'none'"><title>attention-is-all-you-need · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;padding:24px;color:#26352c;background:#f7f8f4;font:16px/1.6 system-ui,sans-serif}h1{font-size:clamp(24px,4vw,34px);line-height:1.12;letter-spacing:-.035em;margin:12px 0}h2{font-size:19px;line-height:1.5}header p{color:#657161}.eyebrow{font-size:11px;letter-spacing:.14em;font-weight:700;color:#5a705e}label{display:grid;gap:6px;font-size:14px;font-weight:600}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:20px;margin:18px 0}.check{display:flex;align-items:center}input:not([type=checkbox]),select,button{font:inherit;border:1px solid #cbd4c6;border-radius:8px;padding:10px;background:white;color:inherit;max-width:100%}input[type=range]{padding:0;width:160px}input[type=checkbox]{width:18px;height:18px;accent-color:#36543d}button{cursor:pointer;font-weight:650;min-height:44px}button:hover{background:#eaf0e7}button:disabled{opacity:.45;cursor:default}:focus-visible{outline:3px solid #678259;outline-offset:3px}.note{font-size:13px;color:#5b685b}.steps{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:24px 0}.steps strong{font-size:14px;text-align:center}pre{background:#eef2e9;padding:16px;border-radius:10px;overflow:auto;font:13px/1.6 ui-monospace,monospace}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}caption{text-align:left;font-size:13px;margin:8px 0;color:#5b685b}td,th{padding:10px;text-align:left;border-bottom:1px solid #dbe1d7;white-space:nowrap}.result{font-size:20px;font-weight:600}.event{padding:20px;background:white;border:1px solid #dbe1d7;border-radius:12px}#error{color:#9b2828}li{margin:8px 0}details{margin-top:20px}summary{cursor:pointer;font-weight:600}@media(max-width:480px){body{padding:16px}.steps{gap:6px}.steps button{font-size:13px;padding:8px}.controls{gap:14px}}
-</style></head><body><header><span class="eyebrow">HOPPER RESEARCH · INTERACTIVE EXAMPLE</span><h1>Watch attention happen.</h1><p>One query. Three keys. A weighted mixture of values.</p></header>
-<div class="controls"><label>Query direction <input id="angle" type="range" min="0" max="180" value="45"><output id="angleValue"></output></label><label>Temperature <input id="temp" type="range" min="5" max="200" value="100"><output id="tempValue"></output></label><label class="check"><input id="causal" type="checkbox"> Mask positions after the selected query</label><label>Query position <select id="position"><option value="0">1</option><option value="1" selected>2</option><option value="2">3</option></select></label></div>
-<p class="note">Hand-chosen vectors, not learned language representations. Temperature is an exploration control; 1 uses the paper’s scaling.</p>
-<nav class="steps" aria-label="Calculation steps"><button type="button" id="previous">← Previous</button><strong id="stepLabel" aria-live="polite"></strong><button type="button" id="next">Next →</button></nav><p id="explanation"></p>
-<pre id="formula"></pre><div class="table-wrap"><table><caption>Keys and values with the selected query’s attention weights</caption><thead><tr><th>Position</th><th>Key K</th><th>Value V</th><th>Score</th><th>Weight</th></tr></thead><tbody id="rows"></tbody></table></div><p class="result" id="result" aria-live="polite"></p>
-<details><summary>Inspect all computed matrices</summary><pre id="matrices"></pre></details>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ecJiXq+mRxE4W7E/QNiOKQOBG990Ew2/U6XrD9g2w6M='; style-src 'sha256-JKbZba9pVnGa0JXxEt4JQ5ncilB173nyNcQIM40+ASY='; base-uri 'none'; form-action 'none'"><title>attention-is-all-you-need · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;color:#263b31;background:#fff;font:15px/1.65 system-ui,sans-serif}main{padding:28px}h1,h2,h3,p{margin-top:0}h2{font-size:23px;line-height:1.25;letter-spacing:-.025em}h3{font-size:17px;line-height:1.35}p{color:#596a60}.eyebrow{display:block;font-size:11px;letter-spacing:.13em;font-weight:750;color:#627a67;margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}.panel{min-width:0}.output{background:#f2f6ef;border:1px solid #d9e3d5;border-radius:12px;padding:23px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}label{display:grid;gap:6px;font-size:13px;font-weight:650}button,select,textarea{font:inherit;color:inherit;border:1px solid #cdd8cf;background:#fff;border-radius:7px;padding:9px 12px;max-width:100%}button{cursor:pointer;font-size:13px;font-weight:650;min-height:40px}button.primary{background:#305d47;border-color:#305d47;color:#fff}button:hover{filter:brightness(.95)}button:disabled{opacity:.45;cursor:default}button[aria-pressed=true]{background:#dce9dc;border-color:#65846b}textarea{resize:vertical;width:100%;min-height:252px;font:12px/1.8 ui-monospace,monospace;white-space:pre}select{min-height:42px}textarea:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.note{font-size:12px;line-height:1.65;color:#627267}.result{font-size:30px;letter-spacing:-.035em;font-weight:700;line-height:1.2;color:#254f39;margin:12px 0 16px}.ticket{padding:14px 0;border-top:1px solid #d6e0d1}.ticket strong{display:block;font-size:14px}.ticket small{font-size:12px;color:#596a60}.badge{display:inline-block;padding:3px 8px;font-size:11px;border-radius:5px;background:#e4ebdc;color:#3d5b40;margin-right:5px}.checks{padding:0;list-style:none;font-size:12px;line-height:1.7}.checks li{margin:8px 0}.checks .fail{color:#8a492a}.checks .pass{color:#315d40}#error{color:#963d26;font-weight:600}#error:empty{display:none}.walkthrough{margin-top:28px;border-top:1px solid #dde5d9;padding-top:24px}.steps{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.steps strong{font-size:13px;text-align:center}.trace-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}pre{margin:12px 0;background:#f3f5f0;border:1px solid #e0e6da;border-radius:8px;padding:16px;overflow:auto;font:12px/1.8 ui-monospace,monospace;max-height:360px}details{margin:18px 0}summary{cursor:pointer;font-weight:650;font-size:13px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #d8e1d3}th{font-weight:600;color:#596a60}progress{display:block;width:100%;height:9px;accent-color:#527a53}progress::-webkit-progress-bar{background:#dce5d5;border-radius:4px}progress::-webkit-progress-value{background:#527a53;border-radius:4px}.record{display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:18px;border-bottom:1px solid #e2e7dd;padding:13px 0}.record label{display:block}.record select{width:100%}.metric{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0}.metric strong{font-size:20px;display:block;color:#305840}.metric span{font-size:12px}.output[aria-busy=true]{opacity:.6}.formula{font-size:14px;color:#304d3b}.training{margin-top:18px;border-top:1px solid #d6e0d1;padding-top:16px}@media(max-width:700px){main{padding:18px}.lab-grid,.trace-grid{grid-template-columns:1fr;gap:20px}h2{font-size:21px}.output{padding:18px}.steps{gap:7px}.steps button{padding:8px;font-size:12px}.result{font-size:27px}textarea{min-height:230px}}
+</style></head><body><main><div class="lab-grid"><section class="panel" aria-labelledby="context-title"><span class="eyebrow">01 · THE CONTEXT</span><h2 id="context-title">The schedule changed. Can the answer follow?</h2><p>Ask about one person. Change their delivery day or move their record. The model must retrieve the fact from the current context.</p><div id="records"></div><div class="toolbar"><button type="button" id="reorder">Reorder the records</button><button type="button" id="reset">Reset schedule</button></div><label>Whose delivery?<select id="person"></select></label><div class="toolbar" aria-label="Comparison mode"><button id="trained" aria-pressed="true" type="button">Learned attention</button><button id="uniform" aria-pressed="false" type="button">Equal attention</button><button id="untrained" aria-pressed="false" type="button">Before training</button></div><p class="note">A small attention head trained here in your browser. Six name identities, five days; structured records, not natural-language understanding. No downloads or API calls.</p></section><section class="panel output" aria-labelledby="answer-title"><span class="eyebrow">02 · THE ANSWER</span><h2 id="answer-title"></h2><p id="answer" class="result" aria-live="polite"></p><p id="explanation"></p><div class="table-wrap"><table><caption class="note">How much each record contributes to this answer</caption><thead><tr><th>Record</th><th>Day</th><th>Attention</th></tr></thead><tbody id="weights"></tbody></table></div><div class="training"><span class="eyebrow">TRAINING, NOT HAND-PICKED WEIGHTS</span><div class="metric"><div><strong id="lossBefore"></strong><span>loss before training</span></div><div><strong id="lossAfter"></strong><span>loss after 800 steps</span></div></div><p class="note">Training teaches query/key matching. Delivery dates are never training labels: they arrive as values at answer time. Attention weights are contributions, not calibrated confidence.</p></div></section></div><section class="walkthrough"><span class="eyebrow">03 · FOLLOW THE COMPUTATION</span><h2>Where does the answer come from?</h2><nav class="steps" aria-label="Attention calculation steps"><button type="button" id="previous">← Previous</button><strong id="stepLabel" aria-live="polite"></strong><button type="button" id="next">Next →</button></nav><h3 id="phase"></h3><p id="detail"></p><div class="trace-grid"><div><span class="eyebrow">THE OPERATION</span><pre id="code"></pre></div><div><span class="eyebrow">ACTUAL VALUES</span><pre id="artifact"></pre></div></div><details><summary>Inspect the complete implementation and training curve</summary><pre id="source"></pre><pre id="history"></pre></details></section></main>
 <script>/** Original educational implementation of Vaswani et al., section 3.2.
  * No learned parameters, training, tokenizer or benchmark reproduction. */
 function matrix(value, name) {
-  if (!Array.isArray(value) || value.length < 1 || value.length > 128 ||
-      !Array.isArray(value[0]) || value[0].length < 1 || value[0].length > 128 ||
-      value.some(row => !Array.isArray(row) || row.length !== value[0].length ||
-        row.some(n => !Number.isFinite(n) || Math.abs(n) > 1e6)))
-    throw new Error(`${name}: expected a finite rectangular matrix, at most 128 × 128`);
+	if (
+		!Array.isArray(value) ||
+		value.length < 1 ||
+		value.length > 128 ||
+		!Array.isArray(value[0]) ||
+		value[0].length < 1 ||
+		value[0].length > 128 ||
+		value.some(
+			(row) =>
+				!Array.isArray(row) ||
+				row.length !== value[0].length ||
+				row.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e6),
+		)
+	)
+		throw new Error(
+			`${name}: expected a finite rectangular matrix, at most 128 × 128`,
+		);
 }
 function attention(Q, K, V, { causal = false, temperature = 1 } = {}) {
-  matrix(Q, 'Q'); matrix(K, 'K'); matrix(V, 'V');
-  if (Q[0].length !== K[0].length || K.length !== V.length)
-    throw new Error('Q/K feature widths and K/V sequence lengths must match');
-  if (causal && Q.length !== K.length) throw new Error('Causal self-attention needs equal lengths');
-  if (!Number.isFinite(temperature) || temperature < 0.05 || temperature > 20)
-    throw new Error('Temperature must be between 0.05 and 20');
-  const scores = Q.map((q, i) => K.map((k, j) => causal && j > i ? -Infinity :
-    q.reduce((sum, x, d) => sum + x * k[d], 0) / Math.sqrt(q.length) / temperature));
-  const weights = scores.map(row => {
-    const max = Math.max(...row);
-    const exps = row.map(x => Math.exp(x - max));
-    const sum = exps.reduce((a, b) => a + b, 0);
-    return exps.map(x => x / sum);
-  });
-  const output = weights.map(row => V[0].map((_, d) =>
-    row.reduce((sum, weight, j) => sum + weight * V[j][d], 0)));
-  return { scores, weights, output };
+	matrix(Q, "Q");
+	matrix(K, "K");
+	matrix(V, "V");
+	if (Q[0].length !== K[0].length || K.length !== V.length)
+		throw new Error("Q/K feature widths and K/V sequence lengths must match");
+	if (causal && Q.length !== K.length)
+		throw new Error("Causal self-attention needs equal lengths");
+	if (!Number.isFinite(temperature) || temperature < 0.05 || temperature > 20)
+		throw new Error("Temperature must be between 0.05 and 20");
+	const scores = Q.map((q, i) =>
+		K.map((k, j) =>
+			causal && j > i
+				? -Infinity
+				: q.reduce((sum, x, d) => sum + x * k[d], 0) /
+					Math.sqrt(q.length) /
+					temperature,
+		),
+	);
+	const weights = scores.map((row) => {
+		const max = Math.max(...row);
+		const exps = row.map((x) => Math.exp(x - max));
+		const sum = exps.reduce((a, b) => a + b, 0);
+		return exps.map((x) => x / sum);
+	});
+	const output = weights.map((row) =>
+		V[0].map((_, d) =>
+			row.reduce((sum, weight, j) => sum + weight * V[j][d], 0),
+		),
+	);
+	return { scores, weights, output };
 }
 function multiHeadAttention(heads, options = {}) {
-  if (!Array.isArray(heads) || !heads.length || heads.length > 16) throw new Error('Expected 1–16 projected heads');
-  const results = heads.map(({ Q, K, V }) => attention(Q, K, V, options));
-  if (results.some(r => r.output.length !== results[0].output.length)) throw new Error('Head query lengths differ');
-  // The caller supplies projected Q/K/V. A learned output projection is not included.
-  return { heads: results, concatenated: results[0].output.map((_, i) => results.flatMap(r => r.output[i])) };
+	if (!Array.isArray(heads) || !heads.length || heads.length > 16)
+		throw new Error("Expected 1–16 projected heads");
+	const results = heads.map(({ Q, K, V }) => attention(Q, K, V, options));
+	if (results.some((r) => r.output.length !== results[0].output.length))
+		throw new Error("Head query lengths differ");
+	// The caller supplies projected Q/K/V. A learned output projection is not included.
+	return {
+		heads: results,
+		concatenated: results[0].output.map((_, i) =>
+			results.flatMap((r) => r.output[i]),
+		),
+	};
 }
 function positionalEncoding(length, width) {
-  if (!Number.isInteger(length) || length < 1 || length > 128 || !Number.isInteger(width) || width < 2 || width > 128 || width % 2)
-    throw new Error('Expected length 1–128 and even width 2–128');
-  return Array.from({ length }, (_, pos) => Array.from({ length: width }, (_, d) =>
-    d % 2 ? Math.cos(pos / 10000 ** ((d - 1) / width)) : Math.sin(pos / 10000 ** (d / width))));
+	if (
+		!Number.isInteger(length) ||
+		length < 1 ||
+		length > 128 ||
+		!Number.isInteger(width) ||
+		width < 2 ||
+		width > 128 ||
+		width % 2
+	)
+		throw new Error("Expected length 1–128 and even width 2–128");
+	return Array.from({ length }, (_, pos) =>
+		Array.from({ length: width }, (_, d) =>
+			d % 2
+				? Math.cos(pos / 10000 ** ((d - 1) / width))
+				: Math.sin(pos / 10000 ** (d / width)),
+		),
+	);
 }
 
-const $ = id => document.getElementById(id);
-let step=0;
-const stages=['1 / 4 · Query and keys','2 / 4 · Scale the dot products','3 / 4 · Normalize with softmax','4 / 4 · Mix the values'];
-const explanations=['Rotate the query and compare its direction with the keys. A dot product measures alignment.', 'Divide the query/key dot products by the square root of key width (2). Masked positions have score −∞.', 'Softmax turns scores into nonnegative weights that sum to one. Lower temperature makes the choice sharper.', 'Multiply each value by its weight and add the results. Attention returns a mixture, not a selected token.'];
-const formulas=['Q = [cos(angle), sin(angle)]; K = [[1,0], [0,1], [-1,0]]','scores = Q × transpose(K) / sqrt(2) / temperature','weights = softmax(scores)','output = weights × V'];
-function render(){
- const angle=Number($('angle').value),t=Number($('temp').value)/100,pos=Number($('position').value);
- const q=[Math.cos(angle*Math.PI/180),Math.sin(angle*Math.PI/180)];
- const K=[[1,0],[0,1],[-1,0]],V=[[1,0],[0,1],[1,1]],Q=[q,q,q];
- const r=attention(Q,K,V,{causal:$('causal').checked,temperature:t});
- $('angleValue').textContent=angle+'°'; $('tempValue').textContent=t.toFixed(2);
- $('stepLabel').textContent=stages[step]; $('explanation').textContent=explanations[step]; $('formula').textContent=formulas[step];
- $('previous').disabled=step===0; $('next').disabled=step===3;
- $('rows').replaceChildren(...K.map((k,j)=>{const tr=document.createElement('tr');
- [String(j+1),JSON.stringify(k),JSON.stringify(V[j]),step>=1?(Number.isFinite(r.scores[pos][j])?r.scores[pos][j].toFixed(3):'masked'):'—',step>=2?(100*r.weights[pos][j]).toFixed(1)+'%':'—'].forEach(text=>{const td=document.createElement('td');td.textContent=text;tr.append(td);});
- return tr;}));
- $('result').textContent=step===3?'Output: ['+r.output[pos].map(n=>n.toFixed(4)).join(', ')+']':'Follow the steps to reveal the result.';
- $('matrices').textContent=JSON.stringify({Q,K,V,...r},(key,value)=>value===-Infinity?'masked':value,2);
+/** A trained attention head over structured records, not a full language model. */
+const people = ["Mira", "Noah", "Lena", "Omar", "Eva", "Jules"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const deliverySample = [
+	{ person: "Mira", day: "Tuesday" },
+	{ person: "Noah", day: "Friday" },
+	{ person: "Lena", day: "Monday" },
+];
+function randomGenerator(seed) {
+	let state = seed;
+	return () => {
+		state = (1664525 * state + 1013904223) >>> 0;
+		return state / 4294967296;
+	};
 }
-for(const id of ['angle','temp','causal','position']) $(id).addEventListener('input',render);
-$('previous').onclick=()=>{step=Math.max(0,step-1);render();}; $('next').onclick=()=>{step=Math.min(3,step+1);render();}; render();
-</script></body></html>
+function modelWeights(seed) {
+	const random = randomGenerator(seed);
+	return Array.from({ length: people.length }, () =>
+		Array.from({ length: 8 }, () => random() - 0.5),
+	);
+}
+function trainLookup({ epochs = 800, seed = 42 } = {}) {
+	if (
+		!Number.isInteger(epochs) ||
+		epochs < 0 ||
+		epochs > 2000 ||
+		!Number.isInteger(seed)
+	)
+		throw Error("Expected 0–2000 epochs and an integer seed.");
+	const Q = modelWeights(seed),
+		K = modelWeights(seed + 1),
+		scale = Math.sqrt(8),
+		learningRate = 0.4,
+		history = [];
+	for (let epoch = 0; epoch <= epochs; epoch++) {
+		const qGrad = Q.map((row) => row.map(() => 0)),
+			kGrad = K.map((row) => row.map(() => 0));
+		let loss = 0;
+		for (let i = 0; i < people.length; i++) {
+			const scores = K.map(
+				(k) => k.reduce((sum, value, d) => sum + Q[i][d] * value, 0) / scale,
+			);
+			const max = Math.max(...scores),
+				exps = scores.map((x) => Math.exp(x - max)),
+				sum = exps.reduce((a, b) => a + b, 0),
+				weights = exps.map((x) => x / sum);
+			loss -= Math.log(weights[i]);
+			for (let j = 0; j < people.length; j++) {
+				const grad = (weights[j] - (i === j ? 1 : 0)) / people.length;
+				for (let d = 0; d < 8; d++) {
+					qGrad[i][d] += (grad * K[j][d]) / scale;
+					kGrad[j][d] += (grad * Q[i][d]) / scale;
+				}
+			}
+		}
+		if (epoch % 100 === 0 || epoch === epochs)
+			history.push({ epoch, loss: loss / people.length });
+		if (epoch === epochs) break;
+		for (let i = 0; i < people.length; i++)
+			for (let d = 0; d < 8; d++) {
+				Q[i][d] -= learningRate * qGrad[i][d];
+				K[i][d] -= learningRate * kGrad[i][d];
+			}
+	}
+	return { Q, K, history, epochs, seed };
+}
+function lookupDelivery(
+	model,
+	records,
+	person,
+	{ uniform = false } = {},
+) {
+	if (
+		!Array.isArray(records) ||
+		records.length < 1 ||
+		records.length > 6 ||
+		new Set(records.map((x) => x.person)).size !== records.length
+	)
+		throw Error("Use 1–6 records with distinct names.");
+	if (
+		records.some(
+			(row) => !people.includes(row.person) || !days.includes(row.day),
+		)
+	)
+		throw Error(
+			"This small model supports only the displayed names and weekdays.",
+		);
+	if (!people.includes(person) || !records.some((row) => row.person === person))
+		throw Error("The requested person needs a record.");
+	if (
+		typeof uniform !== "boolean" ||
+		!model ||
+		!Array.isArray(model.Q) ||
+		!Array.isArray(model.K)
+	)
+		throw Error("Invalid model or attention mode.");
+	const query = model.Q[people.indexOf(person)],
+		keys = records.map((row) => model.K[people.indexOf(row.person)]);
+	const values = records.map((row) =>
+		days.map((day) => (row.day === day ? 1 : 0)),
+	);
+	const result = attention(
+		[uniform ? query.map(() => 0) : query],
+		keys,
+		values,
+	);
+	const probabilities = result.output[0],
+		best = Math.max(...probabilities),
+		answers = days.filter((_, i) => Math.abs(probabilities[i] - best) < 1e-10);
+	return {
+		answer: answers.length === 1 ? answers[0] : "No single answer",
+		probabilities,
+		weights: result.weights[0],
+		scores: result.scores[0],
+		query,
+		keys,
+		values,
+	};
+}
+
+const el = (id) => document.getElementById(id);
+const trainedModel = trainLookup(),
+	untrainedModel = trainLookup({ epochs: 0 });
+let records = deliverySample.map((row) => ({ ...row })),
+	mode = "trained",
+	step = 0,
+	computed;
+el("person").replaceChildren(
+	...people.map((person) => {
+		const option = document.createElement("option");
+		option.value = person;
+		option.textContent = person;
+		return option;
+	}),
+);
+// This walkthrough uses three records; the underlying package supports all six identities.
+for (const option of [...el("person").options])
+	if (!records.some((row) => row.person === option.value)) option.remove();
+el("lossBefore").textContent = trainedModel.history[0].loss.toFixed(3);
+el("lossAfter").textContent = trainedModel.history.at(-1).loss.toFixed(3);
+el("source").textContent =
+	lookupDelivery.toString() + "\n\n" + trainLookup.toString();
+el("history").textContent = JSON.stringify(trainedModel.history, null, 2);
+function drawRecords() {
+	el("records").replaceChildren(
+		...records.map((row) => {
+			const div = document.createElement("div");
+			div.className = "record";
+			const label = document.createElement("label");
+			label.htmlFor = "day-" + row.person;
+			label.textContent = row.person;
+			const select = document.createElement("select");
+			select.id = label.htmlFor;
+			select.replaceChildren(
+				...days.map((day) => {
+					const option = document.createElement("option");
+					option.value = day;
+					option.textContent = day;
+					option.selected = day === row.day;
+					return option;
+				}),
+			);
+			select.onchange = () => {
+				row.day = select.value;
+				render();
+			};
+			div.append(label, select);
+			return div;
+		}),
+	);
+}
+function showStep() {
+	const steps = [
+		[
+			"Represent the question",
+			"The chosen person selects a learned query vector. Each current record selects a learned key. Training adjusted these vectors so matching identities score well.",
+			"query = Q[person]\nkeys = records.map(record => K[record.person])",
+			{ query: computed.query, keys: computed.keys },
+		],
+		[
+			"Compare query with each key",
+			"Dot products score compatibility. Dividing by the square root of the key dimension keeps the scale controlled. Record order changes the order of scores, not which person matches.",
+			"scores = query · keysᵀ / sqrt(8)",
+			records.map((row, i) => ({
+				person: row.person,
+				score: computed.scores[i],
+			})),
+		],
+		[
+			"Turn scores into contributions",
+			"Softmax normalizes the scores. The learned mode concentrates on the relevant record. Equal attention blends unrelated facts; untrained vectors have not learned the matching rule.",
+			"weights = softmax(scores)",
+			records.map((row, i) => ({
+				person: row.person,
+				weight: computed.weights[i],
+			})),
+		],
+		[
+			"Retrieve today’s value",
+			"Each day is a one-hot value vector. A weighted sum carries the selected record’s current day into the output. Changing that day changes the answer without retraining.",
+			"output = weights · values\nanswer = day with largest output",
+			days.map((day, i) => ({ day, value: computed.probabilities[i] })),
+		],
+	];
+	const item = steps[step];
+	el("phase").textContent = item[0];
+	el("detail").textContent = item[1];
+	el("code").textContent = item[2];
+	el("artifact").textContent = JSON.stringify(
+		item[3],
+		(_, value) =>
+			typeof value === "number" ? Math.round(value * 10000) / 10000 : value,
+		2,
+	);
+	el("stepLabel").textContent = `${step + 1} of ${steps.length}`;
+	el("previous").disabled = step === 0;
+	el("next").disabled = step === steps.length - 1;
+}
+function render() {
+	computed = lookupDelivery(
+		mode === "untrained" ? untrainedModel : trainedModel,
+		records,
+		el("person").value,
+		{ uniform: mode === "uniform" },
+	);
+	el("answer-title").textContent = `When is ${el("person").value}’s delivery?`;
+	el("answer").textContent = computed.answer;
+	el("explanation").textContent =
+		mode === "trained"
+			? "The answer is retrieved from the current record. Try changing its day."
+			: mode === "uniform"
+				? "Every record contributes equally. The question no longer selects the relevant fact."
+				: "These random initial weights have not learned to match a question to its record. A plausible answer can be wrong.";
+	el("weights").replaceChildren(
+		...records.map((row, i) => {
+			const tr = document.createElement("tr");
+			for (const value of [row.person, row.day]) {
+				const td = document.createElement("td");
+				td.textContent = value;
+				tr.append(td);
+			}
+			const td = document.createElement("td");
+			td.textContent = (computed.weights[i] * 100).toFixed(1) + "%";
+			const progress = document.createElement("progress");
+			progress.max = 1;
+			progress.value = computed.weights[i];
+			progress.setAttribute("aria-label", row.person + " attention weight");
+			td.append(progress);
+			tr.append(td);
+			return tr;
+		}),
+	);
+	for (const id of ["trained", "uniform", "untrained"])
+		el(id).setAttribute("aria-pressed", String(mode === id));
+	showStep();
+}
+for (const id of ["trained", "uniform", "untrained"])
+	el(id).onclick = () => {
+		mode = id;
+		render();
+	};
+el("person").onchange = render;
+el("reorder").onclick = () => {
+	records.push(records.shift());
+	drawRecords();
+	render();
+};
+el("reset").onclick = () => {
+	records = deliverySample.map((row) => ({ ...row }));
+	el("person").value = "Mira";
+	mode = "trained";
+	step = 0;
+	drawRecords();
+	render();
+};
+el("previous").onclick = () => {
+	if (step > 0) {
+		step--;
+		showStep();
+	}
+};
+el("next").onclick = () => {
+	if (step < 3) {
+		step++;
+		showStep();
+	}
+};
+drawRecords();
+render();
+
+new ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);</script></body></html>

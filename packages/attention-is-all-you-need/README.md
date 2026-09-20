@@ -1,21 +1,48 @@
-# attention-is-all-you-need
+# Attention Is All You Need · retrieve a changing fact
 
-Source paper: https://arxiv.org/abs/1706.03762v7
+Train a tiny attention lookup and inspect how it answers from current context.
+Change a delivery date without retraining; reorder records; compare learned,
+untrained and equal attention. Each score, weight and value is computed locally.
 
-```js
-import { attention, multiHeadAttention, positionalEncoding } from './index.mjs';
-console.log(attention([[0, 0]], [[1, 0], [0, 1]], [[2, 4], [6, 8]]));
-// output: [[4, 6]]; weights: [[0.5, 0.5]]
-console.log(positionalEncoding(3, 4));
+## Try it
+
+From the repository root, run `npm run check`, then open
+`dist/attention-is-all-you-need.html`, or:
+
+```sh
+node packages/attention-is-all-you-need/cli.mjs
 ```
 
-Run tests from the repository root with `npm test`. Open the corresponding
-`dist/attention-is-all-you-need.html` for the browser demo. Original implementation under MIT.
+## Reuse
 
-Q and K must have the same feature width; K and V must have equal row counts.
-Matrices are finite, rectangular and bounded to 128×128. Causal mode requires
-matching Q/K row counts. Temperature defaults to 1; other values are an extra
-teaching control. Multi-head input is already projected Q/K/V, and the returned
-concatenation omits learned output projection. No tokenizer, training, encoder/
-decoder stack, learned weights or paper-quality translation is claimed.
-At temperature 1, the kernel implements section 3.2.1, equation (1).
+```js
+import { trainLookup, lookupDelivery } from './workflow.mjs';
+const model = trainLookup({ epochs: 800, seed: 42 });
+const result = lookupDelivery(model, [
+  { person: 'Mira', day: 'Thursday' },
+  { person: 'Noah', day: 'Friday' },
+], 'Mira');
+console.log(result.answer, result.weights);
+```
+
+## What is actually learned
+
+Two 6×8 embedding tables represent query and key identities. Full-batch gradient
+descent minimizes cross-entropy for matching a query identity to its key among
+six keys. Seeded initialization and 800 updates make training deterministic.
+Delivery dates are never training labels: they are one-hot values at inference.
+Scaled dot-product attention mixes those values. The highest output component
+selects a day; ties return “No single answer”. Weights are contributions, not
+calibrated confidence. Tests exercise new day assignments and record permutations.
+
+Supported names: Mira, Noah, Lena, Omar, Eva, Jules. Supported values: weekdays.
+Queries without a corresponding record fail rather than invent an answer.
+
+This is a trained attention head over structured input, not natural-language
+understanding or a full Transformer. Use ordinary code/database lookup for an
+actual delivery schedule. The example makes query/key/value retrieval legible;
+a Transformer learns richer token representations through many layers and heads.
+The core `index.mjs` also provides causal masking, multi-head concatenation and
+sinusoidal positions, with analytical tests. It does not reproduce translation
+results. Paper: https://arxiv.org/abs/1706.03762v7, §3.2.1 / equation 1.
+Original example code: MIT.
