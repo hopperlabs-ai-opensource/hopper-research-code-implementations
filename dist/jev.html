@@ -1,0 +1,268 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-tgOqjLTXSxbB3Zd9IlFbe+glR+nVg8g1HOZAkhrkaH8='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"><title>Route a request · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;color:#263b31;background:#fff;font:15px/1.65 system-ui,sans-serif}main{padding:28px}h1,h2,h3,p{margin-top:0}h2{font-size:23px;line-height:1.25;letter-spacing:-.025em}h3{font-size:17px;line-height:1.35}p{color:#596a60}.eyebrow{display:block;font-size:11px;letter-spacing:.13em;font-weight:750;color:#627a67;margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}.panel{min-width:0}.output{background:#f2f6ef;border:1px solid #d9e3d5;border-radius:12px;padding:23px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}label{display:grid;gap:6px;font-size:13px;font-weight:650}button,select,textarea{font:inherit;color:inherit;border:1px solid #cdd8cf;background:#fff;border-radius:7px;padding:9px 12px;max-width:100%}button{cursor:pointer;font-size:13px;font-weight:650;min-height:40px}button.primary{background:#305d47;border-color:#305d47;color:#fff}button:hover{filter:brightness(.95)}button:disabled{opacity:.45;cursor:default}button[aria-pressed=true]{background:#dce9dc;border-color:#65846b}textarea{resize:vertical;width:100%;min-height:252px;font:12px/1.8 ui-monospace,monospace;white-space:pre}select{min-height:42px}textarea:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.note{font-size:12px;line-height:1.65;color:#627267}.result{font-size:30px;letter-spacing:-.035em;font-weight:700;line-height:1.2;color:#254f39;margin:12px 0 16px}.ticket{padding:14px 0;border-top:1px solid #d6e0d1}.ticket strong{display:block;font-size:14px}.ticket small{font-size:12px;color:#596a60}.badge{display:inline-block;padding:3px 8px;font-size:11px;border-radius:5px;background:#e4ebdc;color:#3d5b40;margin-right:5px}.checks{padding:0;list-style:none;font-size:12px;line-height:1.7}.checks li{margin:8px 0}.checks .fail{color:#8a492a}.checks .pass{color:#315d40}#error{color:#963d26;font-weight:600}#error:empty{display:none}.walkthrough{margin-top:28px;border-top:1px solid #dde5d9;padding-top:24px}.steps{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.steps strong{font-size:13px;text-align:center}.trace-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}pre{margin:12px 0;background:#f3f5f0;border:1px solid #e0e6da;border-radius:8px;padding:16px;overflow:auto;font:12px/1.8 ui-monospace,monospace;max-height:360px}details{margin:18px 0}summary{cursor:pointer;font-weight:650;font-size:13px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #d8e1d3}th{font-weight:600;color:#596a60}progress{display:block;width:100%;height:9px;accent-color:#527a53}progress::-webkit-progress-bar{background:#dce5d5;border-radius:4px}progress::-webkit-progress-value{background:#527a53;border-radius:4px}.record{display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:18px;border-bottom:1px solid #e2e7dd;padding:13px 0}.record label{display:block}.record select{width:100%}.metric{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0}.metric strong{font-size:20px;display:block;color:#305840}.metric span{font-size:12px}.output[aria-busy=true]{opacity:.6}.formula{font-size:14px;color:#304d3b}.training{margin-top:18px;border-top:1px solid #d6e0d1;padding-top:16px}@media(max-width:700px){main{padding:18px}.lab-grid,.trace-grid{grid-template-columns:1fr;gap:20px}h2{font-size:21px}.output{padding:18px}.steps{gap:7px}.steps button{padding:8px;font-size:12px}.result{font-size:27px}textarea{min-height:230px}}
+
+.trace-grid>div{min-width:0}
+
+/* Native controls and semantic HTML; retain the examples' existing visual language. */
+body{background:#fafbf8}main{max-width:1180px;margin:auto;padding:40px 28px 64px}.site-nav{max-width:1180px;margin:auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #dce3d8}.site-nav div{display:flex;gap:6px;flex-wrap:wrap}.site-nav a{color:#425b4b;font-size:13px;text-decoration:none;padding:7px 10px;border-radius:6px}.site-nav a[aria-current]{background:#e5eddf;color:#254f39}.site-nav .brand{font-weight:750;white-space:nowrap;padding-left:0}.hero{max-width:800px;margin-bottom:36px}.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.1;letter-spacing:-.045em;margin-bottom:20px}.lede{font-size:18px;line-height:1.65;max-width:720px}.pills{display:flex;gap:10px;flex-wrap:wrap}.pills span{padding:5px 10px;border:1px solid #d6e1cf;border-radius:20px;font-size:12px;color:#45604c}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.demo-card{display:flex;flex-direction:column;color:inherit;text-decoration:none;background:#fff;border:1px solid #d6e0d1;border-radius:14px;padding:24px}.demo-card:hover{border-color:#527a53;background:#f5f8f0}.demo-card h3{font-size:22px;letter-spacing:-.025em}.demo-card strong{font-size:13px;margin-top:auto;padding-top:20px;color:#305d47}.demo-card p{font-size:14px}.mini-map{font-size:12px;background:#eff4e9;padding:14px 10px;border-radius:6px;color:#45604c}.experiment{background:#f0f4e8;border-left:3px solid #77965b;border-radius:0 8px 8px 0;padding:16px 18px;margin:18px 0}.experiment strong{font-size:13px}.experiment p{margin:5px 0 0;font-size:14px}.feature-control{grid-template-columns:100px 1fr 44px;align-items:center;gap:12px;margin:22px 0}.feature-control output,.temperature output{font-variant-numeric:tabular-nums;color:#315d40}.temperature{margin-top:30px;grid-template-columns:100px 1fr 44px;align-items:center;gap:12px}input[type=range]{width:100%;min-width:0;accent-color:#527a53;min-height:28px}a:focus-visible,input:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.weight-bar{margin:18px 0;font-size:13px}.weight-bar progress{margin-top:7px;height:11px}.heatmap{margin-top:24px}.heatmap td{text-align:center;font-size:12px}.heatmap th{font-size:12px}.heatmap td[data-level="0"]{background:#f2f5ee}.heatmap td[data-level="1"]{background:#e2ecd7}.heatmap td[data-level="2"]{background:#c5d9b3}.heatmap td[data-level="3"]{background:#a6c28f}.heatmap td[data-level="4"]{background:#75945e;color:#162a18}.heatmap td[data-level="5"]{background:#35583c;color:#fff}.heatmap tr[data-selected=true] th{color:#203d2a;text-decoration:underline;text-decoration-thickness:2px}.path-note{margin-top:26px}.path-note a{color:#305d47;font-weight:650}caption{text-align:left;padding:10px 0;color:#596a60;font-size:12px}#recipe-json{min-height:330px}#recipe-bars{margin-top:20px}
+@media(max-width:850px){.cards{grid-template-columns:1fr}.site-nav{align-items:flex-start;flex-direction:column}.demo-card{padding:22px}.hero{margin-bottom:28px}}@media(max-width:700px){main{padding:26px 18px 40px}.site-nav{padding:16px 18px}.site-nav a{font-size:12px;padding:7px}.lede{font-size:16px}.feature-control,.temperature{grid-template-columns:86px 1fr 40px;gap:8px}.heatmap th,.heatmap td{padding:8px 4px}.hero h1{font-size:36px}}
+
+.feature-control span,.weight-bar span,.result{overflow-wrap:anywhere}.table-wrap:focus-visible{outline:3px solid #829c6b;outline-offset:3px}
+
+.embedded > .site-nav, .embedded main > .hero { display: none; }
+.embedded main { padding-top: 22px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 22px 0; }
+.flow span:not(:nth-child(even)), .flow strong { background: #edf2e8; border: 1px solid #d7e0d0; padding: 12px 15px; border-radius: 8px; font-size: 13px; }
+#probabilities { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; padding: 18px 0; }
+#probabilities label { min-width: 0; }
+#probabilities progress { width: 100%; accent-color: #51764a; }
+#results .ticket { padding: 12px 0; border-bottom: 1px solid #e0e6da; }
+#results h3 { font-size: 13px; margin: 0 0 5px; }
+#results .result { font-size: 23px; }
+blockquote { border-left: 3px solid #aec09e; margin: 22px 0; padding: 0 18px; line-height: 1.8; }
+@media(max-width:600px) { #probabilities { grid-template-columns: 1fr; } .flow { gap: 8px; } }
+.embedded .path-note { display: none; }
+</style></head><body><nav class="site-nav" aria-label="Experiments"><a class="brand" href="index.html">Hopper / Research</a><div><a href="index.html">Start here</a><a href="attention-is-all-you-need.html">Learn attention</a><a href="attention-recipes.html">Use attention</a><a href="code-as-agent-harness.html">Verify a report</a><a href="harness-migration.html">Check a migration</a><a href="jev.html" aria-current="page">Typed decisions</a></div></nav><main><header class="hero"><span class="eyebrow">JEV / DECISIONS IN CODE</span><h1>When should software act—and when should it ask?</h1><p class="lede">Compare keyword routing with a typed-answer workflow. Change the policy and watch the route change.</p><p class="note">Offline lab. The three model-shaped responses below are authored teaching fixtures, not recorded Jev or LLM outputs. This demonstrates control flow, not model accuracy or calibration.</p></header><p class="note">Offline lab: model-shaped responses are authored teaching fixtures, not recorded Jev or LLM outputs. No accuracy or calibration is measured.</p><div class="lab-grid"><section class="panel"><label>Choose a request<select id="scenario"></select></label><blockquote id="ticket"></blockquote><label>Required confidence to route automatically<input id="threshold" type="range" min="0" max="1" step="0.01" value="0.8"><output id="threshold-value"></output></label><p>Raise the threshold to send more cases for review. Lower it to accept more proposed routes. The model-shaped answer stays unchanged.</p><details><summary>Edit the typed answer fixture</summary><label for="fixture">Department probabilities, confidence and urgency</label><textarea id="fixture" maxlength="16000" spellcheck="false"></textarea><button id="apply" type="button">Apply fixture</button><p id="error" role="alert"></p></details></section><section class="panel output"><span class="eyebrow">SAME REQUEST · THREE PATHS</span><div id="results"></div><p class="note">Structured JSON and typed API answers use the same policy here. Both still need validation. A well-built general-model integration can also return valid structured data; this lab does not rank model performance.</p></section></div><section class="walkthrough"><h2>A decision is more than a label.</h2><div class="flow"><span>Request</span><span>→</span><span>Typed questions</span><span>→</span><span>Validate answers</span><span>→</span><strong id="flow-result"></strong></div><div id="probabilities"></div><p id="reason"></p><details><summary>The exact routing function</summary><pre id="code"></pre></details><details><summary>The request you can send to Jev</summary><pre id="request"></pre></details></section><section class="walkthrough"><h2>Run the real integration on your machine.</h2><p>The downloadable CLI can call the documented TypeSafe endpoint using your account. The browser lab never asks for a key or makes a provider call.</p><pre>node packages/jev/cli.mjs mixed
+# Real API, with your own key in a private file:
+TYPESAFE_API_KEY_FILE=/absolute/path/to/key.txt node packages/jev/cli.mjs --live ticket.txt</pre><p class="note">Live API access and usage charges belong to your TypeSafe account. The integration has contract tests with a stub; no live-provider qualification or vendor performance claim is implied.</p></section></main>
+<script>/** Original teaching workflow. Fixture answers are authored examples, not model measurements. */
+const departments = ["billing", "technical", "sales"];
+const scenarios = [
+	{
+		id: "invoice",
+		title: "A clear billing request",
+		state: "Please send the invoice for our September subscription.",
+		answers: {
+			department: {
+				type: "choice",
+				choice: "billing",
+				confidence: 0.94,
+				probabilities: { billing: 0.97, technical: 0.02, sales: 0.01 },
+			},
+			urgent: { type: "noul", noul: 0.08 },
+		},
+	},
+	{
+		id: "negation",
+		title: "The keyword points the wrong way",
+		state:
+			"Login is working now. The remaining issue is that our card was charged twice.",
+		answers: {
+			department: {
+				type: "choice",
+				choice: "billing",
+				confidence: 0.88,
+				probabilities: { billing: 0.93, technical: 0.04, sales: 0.03 },
+			},
+			urgent: { type: "noul", noul: 0.6 },
+		},
+	},
+	{
+		id: "mixed",
+		title: "Two problems, no clear owner",
+		state:
+			"Our export failed after changing the plan and we also see a duplicate charge. The team needs help today.",
+		answers: {
+			department: {
+				type: "choice",
+				choice: "technical",
+				confidence: 0.24,
+				probabilities: { billing: 0.45, technical: 0.5, sales: 0.05 },
+			},
+			urgent: { type: "noul", noul: 0.9 },
+		},
+	},
+];
+function requestFor(state, model = "jev-latest") {
+	if (typeof state !== "string" || !state.trim() || state.length > 8000)
+		throw Error("Use a nonempty request of at most 8,000 characters.");
+	if (typeof model !== "string" || !/^jev-[\w.-]{1,80}$/.test(model))
+		throw Error("Choose a Jev model identifier.");
+	return {
+		model,
+		state,
+		questions: {
+			department: {
+				type: "choice",
+				instructions:
+					"Which team should own this request? Consider what is still unresolved, including negation.",
+				criteria: {
+					billing: "Charges, invoices and subscriptions",
+					technical: "Software defects, sign-in and data failures",
+					sales: "Questions about buying or upgrading",
+				},
+			},
+			urgent: {
+				type: "noul",
+				instructions: "Does the unresolved issue need urgent attention?",
+			},
+		},
+	};
+}
+function ruleRoute(state) {
+	requestFor(state);
+	const text = state.toLowerCase();
+	const rules = [
+		["technical", /login|sign.in|export|error|bug/],
+		["billing", /invoice|charg|payment|subscription/],
+		["sales", /buy|pricing|upgrade/],
+	];
+	const found = rules.find(([, pattern]) => pattern.test(text));
+	return {
+		route: found?.[0] ?? "review",
+		reason: found
+			? `First matching keyword rule: ${found[0]}.`
+			: "No rule matched; ask a person.",
+		urgent: /urgent|today|immediate/.test(text),
+	};
+}
+function validateAnswers(answers) {
+	const choice = answers?.department,
+		urgent = answers?.urgent;
+	const unit = (x) =>
+		typeof x === "number" && Number.isFinite(x) && x >= 0 && x <= 1;
+	if (
+		choice?.type !== "choice" ||
+		!departments.includes(choice.choice) ||
+		!unit(choice.confidence) ||
+		urgent?.type !== "noul" ||
+		!unit(urgent.noul)
+	)
+		throw Error("Invalid typed answers. No decision returned.");
+	const probs = choice.probabilities;
+	if (
+		!probs ||
+		Object.keys(probs).length !== departments.length ||
+		!departments.every(
+			(key) => Object.hasOwn(probs, key) && unit(probs[key]),
+		) ||
+		Math.abs(Object.values(probs).reduce((a, b) => a + b, 0) - 1) > 0.001
+	)
+		throw Error("Expected a normalized probability for each department.");
+	return answers;
+}
+function routeAnswers(
+	answers,
+	{ threshold = 0.8, urgencyThreshold = 0.75 } = {},
+) {
+	if (
+		!Number.isFinite(threshold) ||
+		threshold < 0 ||
+		threshold > 1 ||
+		!Number.isFinite(urgencyThreshold) ||
+		urgencyThreshold < 0 ||
+		urgencyThreshold > 1
+	)
+		throw Error("Thresholds must be between 0 and 1.");
+	validateAnswers(answers);
+	const { department, urgent } = answers;
+	return {
+		route: department.confidence >= threshold ? department.choice : "review",
+		urgent: urgent.noul >= urgencyThreshold,
+		confidence: department.confidence,
+		reason:
+			department.confidence >= threshold
+				? "Confidence meets the selected routing threshold."
+				: "Confidence is below the threshold; request human triage.",
+		proposed: department.choice,
+	};
+}
+function parseStructuredAnswer(json) {
+	if (typeof json !== "string" || json.length > 16000)
+		throw Error("Keep the JSON answer under 16,000 characters.");
+	const parsed = JSON.parse(json);
+	return validateAnswers(parsed);
+}
+function compareRouting(state, answers, threshold = 0.8) {
+	const rules = ruleRoute(state);
+	// Apply exactly the same policy to both structured-answer paths. This is not a model benchmark.
+	const structured = routeAnswers(
+		parseStructuredAnswer(JSON.stringify(answers)),
+		{ threshold },
+	);
+	const typed = routeAnswers(answers, { threshold });
+	return { rules, structured, typed };
+}
+
+const el = (id) => document.getElementById(id);
+let selected = scenarios[0],
+	answers = structuredClone(selected.answers);
+el("scenario").replaceChildren(
+	...scenarios.map((s) => {
+		const option = document.createElement("option");
+		option.value = s.id;
+		option.textContent = s.title;
+		return option;
+	}),
+);
+function render() {
+	const threshold = Number(el("threshold").value),
+		r = compareRouting(selected.state, answers, threshold);
+	el("threshold-value").textContent = threshold.toFixed(2);
+	el("ticket").textContent = selected.state;
+	el("results").replaceChildren(
+		...[
+			["Keyword rules", r.rules],
+			["General model → structured JSON → policy", r.structured],
+			["Jev-shaped typed answer → policy", r.typed],
+		].map(([title, result]) => {
+			const div = document.createElement("div");
+			div.className = "ticket";
+			const h = document.createElement("h3");
+			h.textContent = title;
+			const value = document.createElement("strong");
+			value.className = "result";
+			value.textContent =
+				result.route === "review" ? "Human review" : result.route;
+			const note = document.createElement("p");
+			note.textContent = result.reason;
+			div.append(h, value, note);
+			return div;
+		}),
+	);
+	el("probabilities").replaceChildren(
+		...Object.entries(answers.department.probabilities).map(([name, value]) => {
+			const label = document.createElement("label");
+			label.textContent = `${name}: ${(value * 100).toFixed(0)}%`;
+			const bar = document.createElement("progress");
+			bar.max = 1;
+			bar.value = value;
+			label.append(bar);
+			return label;
+		}),
+	);
+	el("reason").textContent =
+		`Fixture confidence ${answers.department.confidence.toFixed(2)}; policy threshold ${threshold.toFixed(2)}. ${r.typed.reason}${r.typed.urgent ? " Urgency is flagged independently." : ""}`;
+	el("flow-result").textContent =
+		r.typed.route === "review" ? "Review" : `Route: ${r.typed.route}`;
+	el("code").textContent = routeAnswers.toString();
+	el("request").textContent = JSON.stringify(
+		requestFor(selected.state),
+		null,
+		2,
+	);
+}
+function load() {
+	selected = scenarios.find((s) => s.id === el("scenario").value);
+	answers = structuredClone(selected.answers);
+	el("fixture").value = JSON.stringify(answers, null, 2);
+	el("error").textContent = "";
+	render();
+}
+el("scenario").onchange = load;
+el("threshold").oninput = render;
+el("apply").onclick = () => {
+	try {
+		const next = parseStructuredAnswer(el("fixture").value);
+		answers = next;
+		el("error").textContent = "";
+		render();
+	} catch (error) {
+		el("error").textContent =
+			`Not applied: ${error.message} The last valid fixture remains active.`;
+	}
+};
+load();
+
+
+if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embedded');
+new ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);</script></body></html>

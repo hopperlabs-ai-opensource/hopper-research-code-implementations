@@ -95,13 +95,14 @@ export function lookupDelivery(
 		!Array.isArray(model.K)
 	)
 		throw Error("Invalid model or attention mode.");
-	const query = model.Q[people.indexOf(person)],
+	const learnedQuery = model.Q[people.indexOf(person)],
+		query = uniform ? learnedQuery.map(() => 0) : learnedQuery,
 		keys = records.map((row) => model.K[people.indexOf(row.person)]);
 	const values = records.map((row) =>
 		days.map((day) => (row.day === day ? 1 : 0)),
 	);
 	const result = attention(
-		[uniform ? query.map(() => 0) : query],
+		[query],
 		keys,
 		values,
 	);

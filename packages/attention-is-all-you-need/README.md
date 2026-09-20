@@ -11,7 +11,17 @@ From the repository root, run `npm run check`, then open
 
 ```sh
 node packages/attention-is-all-you-need/cli.mjs
+node packages/attention-is-all-you-need/cli.mjs --json
 ```
+
+The default CLI explains the result and a changed-date experiment. `--json`
+(or `--verbose`) prints the full training history and computed vectors.
+
+Run `npm start` for the visual index, or open `dist/attention-recipes.html`
+for two additional examples: finding a help article and blending project effort.
+Those use editable, hand-authored features rather than learned identities.
+See [Adapt an example](../../docs/adapt-an-example.md) for the `runRecipe` API,
+a runnable starting point, and guidance on choosing a simpler baseline.
 
 ## Reuse
 
@@ -46,3 +56,9 @@ The core `index.mjs` also provides causal masking, multi-head concatenation and
 sinusoidal positions, with analytical tests. It does not reproduce translation
 results. Paper: https://arxiv.org/abs/1706.03762v7, §3.2.1 / equation 1.
 Original example code: MIT.
+
+Run both recipe comparisons from the terminal:
+
+```sh
+node packages/attention-is-all-you-need/recipes-cli.mjs
+```

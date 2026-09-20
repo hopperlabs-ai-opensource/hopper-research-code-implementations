@@ -1,0 +1,264 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Mil7pWElJAdlaSLGEJ9V3eoUSk+8Z/DKMBi5o1Fbado='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"><title>Give attention a job · Hopper research</title><style>*{box-sizing:border-box}body{margin:0;color:#263b31;background:#fff;font:15px/1.65 system-ui,sans-serif}main{padding:28px}h1,h2,h3,p{margin-top:0}h2{font-size:23px;line-height:1.25;letter-spacing:-.025em}h3{font-size:17px;line-height:1.35}p{color:#596a60}.eyebrow{display:block;font-size:11px;letter-spacing:.13em;font-weight:750;color:#627a67;margin-bottom:9px}.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}.panel{min-width:0}.output{background:#f2f6ef;border:1px solid #d9e3d5;border-radius:12px;padding:23px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}label{display:grid;gap:6px;font-size:13px;font-weight:650}button,select,textarea{font:inherit;color:inherit;border:1px solid #cdd8cf;background:#fff;border-radius:7px;padding:9px 12px;max-width:100%}button{cursor:pointer;font-size:13px;font-weight:650;min-height:40px}button.primary{background:#305d47;border-color:#305d47;color:#fff}button:hover{filter:brightness(.95)}button:disabled{opacity:.45;cursor:default}button[aria-pressed=true]{background:#dce9dc;border-color:#65846b}textarea{resize:vertical;width:100%;min-height:252px;font:12px/1.8 ui-monospace,monospace;white-space:pre}select{min-height:42px}textarea:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.note{font-size:12px;line-height:1.65;color:#627267}.result{font-size:30px;letter-spacing:-.035em;font-weight:700;line-height:1.2;color:#254f39;margin:12px 0 16px}.ticket{padding:14px 0;border-top:1px solid #d6e0d1}.ticket strong{display:block;font-size:14px}.ticket small{font-size:12px;color:#596a60}.badge{display:inline-block;padding:3px 8px;font-size:11px;border-radius:5px;background:#e4ebdc;color:#3d5b40;margin-right:5px}.checks{padding:0;list-style:none;font-size:12px;line-height:1.7}.checks li{margin:8px 0}.checks .fail{color:#8a492a}.checks .pass{color:#315d40}#error{color:#963d26;font-weight:600}#error:empty{display:none}.walkthrough{margin-top:28px;border-top:1px solid #dde5d9;padding-top:24px}.steps{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.steps strong{font-size:13px;text-align:center}.trace-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}pre{margin:12px 0;background:#f3f5f0;border:1px solid #e0e6da;border-radius:8px;padding:16px;overflow:auto;font:12px/1.8 ui-monospace,monospace;max-height:360px}details{margin:18px 0}summary{cursor:pointer;font-weight:650;font-size:13px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #d8e1d3}th{font-weight:600;color:#596a60}progress{display:block;width:100%;height:9px;accent-color:#527a53}progress::-webkit-progress-bar{background:#dce5d5;border-radius:4px}progress::-webkit-progress-value{background:#527a53;border-radius:4px}.record{display:grid;grid-template-columns:1fr 1.4fr;align-items:center;gap:18px;border-bottom:1px solid #e2e7dd;padding:13px 0}.record label{display:block}.record select{width:100%}.metric{display:flex;gap:24px;flex-wrap:wrap;margin:14px 0}.metric strong{font-size:20px;display:block;color:#305840}.metric span{font-size:12px}.output[aria-busy=true]{opacity:.6}.formula{font-size:14px;color:#304d3b}.training{margin-top:18px;border-top:1px solid #d6e0d1;padding-top:16px}@media(max-width:700px){main{padding:18px}.lab-grid,.trace-grid{grid-template-columns:1fr;gap:20px}h2{font-size:21px}.output{padding:18px}.steps{gap:7px}.steps button{padding:8px;font-size:12px}.result{font-size:27px}textarea{min-height:230px}}
+
+.trace-grid>div{min-width:0}
+
+/* Native controls and semantic HTML; retain the examples' existing visual language. */
+body{background:#fafbf8}main{max-width:1180px;margin:auto;padding:40px 28px 64px}.site-nav{max-width:1180px;margin:auto;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #dce3d8}.site-nav div{display:flex;gap:6px;flex-wrap:wrap}.site-nav a{color:#425b4b;font-size:13px;text-decoration:none;padding:7px 10px;border-radius:6px}.site-nav a[aria-current]{background:#e5eddf;color:#254f39}.site-nav .brand{font-weight:750;white-space:nowrap;padding-left:0}.hero{max-width:800px;margin-bottom:36px}.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.1;letter-spacing:-.045em;margin-bottom:20px}.lede{font-size:18px;line-height:1.65;max-width:720px}.pills{display:flex;gap:10px;flex-wrap:wrap}.pills span{padding:5px 10px;border:1px solid #d6e1cf;border-radius:20px;font-size:12px;color:#45604c}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.demo-card{display:flex;flex-direction:column;color:inherit;text-decoration:none;background:#fff;border:1px solid #d6e0d1;border-radius:14px;padding:24px}.demo-card:hover{border-color:#527a53;background:#f5f8f0}.demo-card h3{font-size:22px;letter-spacing:-.025em}.demo-card strong{font-size:13px;margin-top:auto;padding-top:20px;color:#305d47}.demo-card p{font-size:14px}.mini-map{font-size:12px;background:#eff4e9;padding:14px 10px;border-radius:6px;color:#45604c}.experiment{background:#f0f4e8;border-left:3px solid #77965b;border-radius:0 8px 8px 0;padding:16px 18px;margin:18px 0}.experiment strong{font-size:13px}.experiment p{margin:5px 0 0;font-size:14px}.feature-control{grid-template-columns:100px 1fr 44px;align-items:center;gap:12px;margin:22px 0}.feature-control output,.temperature output{font-variant-numeric:tabular-nums;color:#315d40}.temperature{margin-top:30px;grid-template-columns:100px 1fr 44px;align-items:center;gap:12px}input[type=range]{width:100%;min-width:0;accent-color:#527a53;min-height:28px}a:focus-visible,input:focus-visible{outline:3px solid #829c6b;outline-offset:3px}.weight-bar{margin:18px 0;font-size:13px}.weight-bar progress{margin-top:7px;height:11px}.heatmap{margin-top:24px}.heatmap td{text-align:center;font-size:12px}.heatmap th{font-size:12px}.heatmap td[data-level="0"]{background:#f2f5ee}.heatmap td[data-level="1"]{background:#e2ecd7}.heatmap td[data-level="2"]{background:#c5d9b3}.heatmap td[data-level="3"]{background:#a6c28f}.heatmap td[data-level="4"]{background:#75945e;color:#162a18}.heatmap td[data-level="5"]{background:#35583c;color:#fff}.heatmap tr[data-selected=true] th{color:#203d2a;text-decoration:underline;text-decoration-thickness:2px}.path-note{margin-top:26px}.path-note a{color:#305d47;font-weight:650}caption{text-align:left;padding:10px 0;color:#596a60;font-size:12px}#recipe-json{min-height:330px}#recipe-bars{margin-top:20px}
+@media(max-width:850px){.cards{grid-template-columns:1fr}.site-nav{align-items:flex-start;flex-direction:column}.demo-card{padding:22px}.hero{margin-bottom:28px}}@media(max-width:700px){main{padding:26px 18px 40px}.site-nav{padding:16px 18px}.site-nav a{font-size:12px;padding:7px}.lede{font-size:16px}.feature-control,.temperature{grid-template-columns:86px 1fr 40px;gap:8px}.heatmap th,.heatmap td{padding:8px 4px}.hero h1{font-size:36px}}
+
+.feature-control span,.weight-bar span,.result{overflow-wrap:anywhere}.table-wrap:focus-visible{outline:3px solid #829c6b;outline-offset:3px}
+
+.embedded > .site-nav, .embedded main > .hero { display: none; }
+.embedded main { padding-top: 22px; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 22px 0; }
+.flow span:not(:nth-child(even)), .flow strong { background: #edf2e8; border: 1px solid #d7e0d0; padding: 12px 15px; border-radius: 8px; font-size: 13px; }
+#probabilities { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; padding: 18px 0; }
+#probabilities label { min-width: 0; }
+#probabilities progress { width: 100%; accent-color: #51764a; }
+#results .ticket { padding: 12px 0; border-bottom: 1px solid #e0e6da; }
+#results h3 { font-size: 13px; margin: 0 0 5px; }
+#results .result { font-size: 23px; }
+blockquote { border-left: 3px solid #aec09e; margin: 22px 0; padding: 0 18px; line-height: 1.8; }
+@media(max-width:600px) { #probabilities { grid-template-columns: 1fr; } .flow { gap: 8px; } }
+.embedded .path-note { display: none; }
+</style></head><body><nav class="site-nav" aria-label="Experiments"><a class="brand" href="index.html">Hopper / Research</a><div><a href="index.html">Start here</a><a href="attention-is-all-you-need.html">Learn attention</a><a href="attention-recipes.html" aria-current="page">Use attention</a><a href="code-as-agent-harness.html">Verify a report</a><a href="harness-migration.html">Check a migration</a><a href="jev.html">Typed decisions</a></div></nav><main>
+<header class="hero"><span class="eyebrow">02 / ADAPT THE IDEA</span><h1>Give attention a job.</h1><p class="lede">Describe a request. Compare it with a few records. See how relevance turns into a useful selection or a weighted estimate.</p><p class="note">These examples use visible, hand-authored features. Nothing is trained here; no language model is called.</p></header>
+<div class="toolbar recipe-tabs" aria-label="Choose an example"><button id="recipe-0" type="button">Find a help article</button><button id="recipe-1" type="button">Estimate project effort</button></div>
+<div class="lab-grid">
+<section class="panel" aria-labelledby="question"><span class="eyebrow">1 · DESCRIBE THE REQUEST</span><h2 id="question"></h2><div id="features"></div><label class="temperature">Temperature <input id="temperature" type="range" min="0.05" max="2" step="0.05" value="0.25"><output id="temperature-value" for="temperature">0.25</output></label><p class="note">Lower: concentrate on the strongest matches. Higher: blend more evenly. Temperature changes the spread, not the ranking.</p><div class="experiment"><strong>Try this</strong><p id="try"></p></div></section>
+<section class="panel output" aria-labelledby="result-title"><span class="eyebrow">2 · SEE WHAT CHANGES</span><h2 id="result-title">Strongest match</h2><p id="match" class="result" aria-live="polite"></p><p id="signal" class="note"></p><div class="metric"><div><strong id="blended"></strong><span id="unit"></span></div><div><strong id="average"></strong><span>simple average for comparison</span></div></div><p id="blend-note" class="note"></p><div id="recipe-bars"></div></section>
+</div>
+<section class="walkthrough"><span class="eyebrow">3 · FOLLOW THE NUMBERS</span><h2>Request → match scores → weights → result</h2><p>Each row contributes its value in proportion to its attention weight. Features are shown in the same order as the request sliders.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Per-record calculation; scroll to see all columns"><table><caption id="feature-order"></caption><thead><tr><th scope="col">Record</th><th scope="col">Features (key)</th><th scope="col">Scaled score</th><th scope="col">Weight</th><th scope="col">Value</th><th scope="col">Contribution</th></tr></thead><tbody id="recipe-rows"></tbody></table></div><details><summary>See the calculation in JavaScript</summary><pre id="calculation"></pre></details></section>
+<section class="walkthrough"><span class="eyebrow">4 · MAKE IT YOURS</span><h2>Bring a small problem of your own.</h2><p id="adapt"></p><p>Rename the features, replace the records, and change the values below. Use 1–8 features and 1–12 records; each query/key feature is a number from 0 to 1. Keep every value in the same unit.</p><details id="editor"><summary>Edit this example as JSON</summary><label for="recipe-json">Local data only; no uploads or code execution</label><textarea id="recipe-json" maxlength="16000" spellcheck="false"></textarea><div class="toolbar"><button class="primary" id="apply" type="button">Use my data</button><button id="restore" type="button">Restore example</button></div><p id="error" role="alert"></p></details><details><summary>Copy a runnable starting point</summary><p class="note">Save as try-attention.mjs in the repository root, then run node try-attention.mjs.</p><pre id="starter"></pre></details><p class="note">A high dot product means feature overlap, not factual correctness. Feature scale and extra active features affect the score. Zero overlap produces an average, not evidence of a good match. Validate your representation and compare with a simpler baseline.</p></section>
+</main>
+<script>/** Original educational implementation of Vaswani et al., section 3.2.
+ * No learned parameters, training, tokenizer or benchmark reproduction. */
+function matrix(value, name) {
+	if (
+		!Array.isArray(value) ||
+		value.length < 1 ||
+		value.length > 128 ||
+		!Array.isArray(value[0]) ||
+		value[0].length < 1 ||
+		value[0].length > 128 ||
+		value.some(
+			(row) =>
+				!Array.isArray(row) ||
+				row.length !== value[0].length ||
+				row.some((n) => !Number.isFinite(n) || Math.abs(n) > 1e6),
+		)
+	)
+		throw new Error(
+			`${name}: expected a finite rectangular matrix, at most 128 × 128`,
+		);
+}
+function attention(Q, K, V, { causal = false, temperature = 1 } = {}) {
+	matrix(Q, "Q");
+	matrix(K, "K");
+	matrix(V, "V");
+	if (Q[0].length !== K[0].length || K.length !== V.length)
+		throw new Error("Q/K feature widths and K/V sequence lengths must match");
+	if (causal && Q.length !== K.length)
+		throw new Error("Causal self-attention needs equal lengths");
+	if (!Number.isFinite(temperature) || temperature < 0.05 || temperature > 20)
+		throw new Error("Temperature must be between 0.05 and 20");
+	const scores = Q.map((q, i) =>
+		K.map((k, j) =>
+			causal && j > i
+				? -Infinity
+				: q.reduce((sum, x, d) => sum + x * k[d], 0) /
+					Math.sqrt(q.length) /
+					temperature,
+		),
+	);
+	const weights = scores.map((row) => {
+		const max = Math.max(...row);
+		const exps = row.map((x) => Math.exp(x - max));
+		const sum = exps.reduce((a, b) => a + b, 0);
+		return exps.map((x) => x / sum);
+	});
+	const output = weights.map((row) =>
+		V[0].map((_, d) =>
+			row.reduce((sum, weight, j) => sum + weight * V[j][d], 0),
+		),
+	);
+	return { scores, weights, output };
+}
+function multiHeadAttention(heads, options = {}) {
+	if (!Array.isArray(heads) || !heads.length || heads.length > 16)
+		throw new Error("Expected 1–16 projected heads");
+	const results = heads.map(({ Q, K, V }) => attention(Q, K, V, options));
+	if (results.some((r) => r.output.length !== results[0].output.length))
+		throw new Error("Head query lengths differ");
+	// The caller supplies projected Q/K/V. A learned output projection is not included.
+	return {
+		heads: results,
+		concatenated: results[0].output.map((_, i) =>
+			results.flatMap((r) => r.output[i]),
+		),
+	};
+}
+function positionalEncoding(length, width) {
+	if (
+		!Number.isInteger(length) ||
+		length < 1 ||
+		length > 128 ||
+		!Number.isInteger(width) ||
+		width < 2 ||
+		width > 128 ||
+		width % 2
+	)
+		throw new Error("Expected length 1–128 and even width 2–128");
+	return Array.from({ length }, (_, pos) =>
+		Array.from({ length: width }, (_, d) =>
+			d % 2
+				? Math.cos(pos / 10000 ** ((d - 1) / width))
+				: Math.sin(pos / 10000 ** (d / width)),
+		),
+	);
+}
+
+
+/** Hand-authored features make the mechanics visible. No embeddings or training. */
+const recipes = [
+  {
+    title: "Find a useful help article",
+    question: "Which article fits this support request?",
+    features: ["Sign-in", "Billing", "Export"],
+    query: [1, 0, 0],
+    unit: "minutes to read",
+    records: [
+      { label: "Reset a password", key: [1, 0, 0], value: 3 },
+      { label: "Update a payment method", key: [0, 1, 0], value: 5 },
+      { label: "Download an invoice", key: [0, 0.8, 0.7], value: 4 },
+      { label: "Export your workspace", key: [0, 0, 1], value: 8 },
+    ],
+    try: "Turn Sign-in down and Export up. Then add Billing: an article that covers both topics becomes more relevant.",
+    adapt: "Replace the articles with your own records and choose a few explicit features. For exact categories, start with a filter. This example is useful when a request can overlap several topics.",
+  },
+  {
+    title: "Blend estimates from past work",
+    question: "What do related projects suggest about effort?",
+    features: ["Interface", "Data", "Integration"],
+    query: [0, 1, 1],
+    unit: "illustrative days",
+    records: [
+      { label: "Settings page", key: [1, 0, 0], value: 2 },
+      { label: "Import cleanup", key: [0, 1, 0.2], value: 5 },
+      { label: "Partner sync", key: [0.1, 0.7, 1], value: 12 },
+      { label: "Reporting dashboard", key: [0.8, 1, 0.1], value: 7 },
+    ],
+    try: "Change the request from data + integration to interface work. Raise the temperature to spread weight across more projects.",
+    adapt: "Replace the fictional projects with comparable completed work. Keep values in one unit. Compare against a simple average on held-out work before trusting estimates; these weights are not uncertainty bounds.",
+  },
+];
+
+function runRecipe(data, { temperature = 0.25 } = {}) {
+  const label = (s) => typeof s === "string" && s.trim().length > 0 && s.length <= 80;
+  if (!data || !Array.isArray(data.features) || data.features.length < 1 || data.features.length > 8 ||
+      !Array.from(data.features).every(label) || new Set(data.features).size !== data.features.length)
+    throw Error("Use 1–8 distinct feature names, each at most 80 characters.");
+  const vector = (v) => Array.isArray(v) && v.length === data.features.length &&
+    Array.from(v).every((x) => Number.isFinite(x) && x >= 0 && x <= 1);
+  if (!vector(data.query)) throw Error("Query features must be numbers between 0 and 1.");
+  if (!Array.isArray(data.records) || data.records.length < 1 || data.records.length > 12 ||
+      !Array.from(data.records).every((r) => r && label(r.label) && vector(r.key) && Number.isFinite(r.value) && r.value >= 0 && r.value <= 10000) ||
+      new Set(data.records.map((r) => r.label)).size !== data.records.length)
+    throw Error("Use 1–12 distinct records with labels, feature vectors from 0 to 1, and numeric values from 0 to 10,000.");
+  if (!label(data.unit)) throw Error("Give the values a unit, such as minutes or days.");
+  const result = attention([data.query], data.records.map((r) => r.key), data.records.map((r) => [r.value]), { temperature });
+  const strongest = Math.max(...result.weights[0]);
+  const matches = data.records.filter((_, i) => Math.abs(result.weights[0][i] - strongest) < 1e-10);
+  return {
+    match: matches.length === 1 ? matches[0].label : "No single match",
+    noSignal: result.scores[0].every((score) => score === 0),
+    output: result.output[0][0],
+    rows: data.records.map((r, i) => ({ ...r, score: result.scores[0][i], weight: result.weights[0][i], contribution: result.weights[0][i] * r.value })),
+  };
+}
+
+const el = (id) => document.getElementById(id);
+let selected = 0, data;
+function editableData() {
+  return { features: data.features, query: data.query, unit: data.unit, records: data.records };
+}
+function syncEditor() {
+  el("recipe-json").value = JSON.stringify(editableData(), null, 2);
+}
+function drawFeatures() {
+  el("features").replaceChildren(...data.features.map((name, i) => {
+    const label = document.createElement("label");
+    label.className = "feature-control";
+    const title = document.createElement("span");
+    title.textContent = name;
+    const input = document.createElement("input");
+    input.type = "range"; input.min = 0; input.max = 1; input.step = 0.05;
+    input.value = data.query[i]; input.id = `feature-${i}`;
+    const value = document.createElement("output");
+    value.htmlFor = input.id; value.textContent = data.query[i].toFixed(2);
+    input.oninput = () => {
+      data.query[i] = Number(input.value); value.textContent = data.query[i].toFixed(2);
+      render();
+    };
+    label.append(title, input, value); return label;
+  }));
+}
+function render() {
+  const temperature = Number(el("temperature").value);
+  const result = runRecipe(data, { temperature });
+  el("temperature-value").textContent = temperature.toFixed(2);
+  el("match").textContent = result.match;
+  el("signal").textContent = result.noSignal ? "No feature overlap. These equal weights carry no matching signal." : "Weights show contributions, not confidence or a guarantee that a record is suitable.";
+  el("blended").textContent = result.output.toFixed(2);
+  el("unit").textContent = data.unit + " · weighted blend";
+  el("blend-note").textContent = data.title === recipes[0].title
+    ? "For article selection, use the strongest match. The weighted value is Σ(weight × reading time), not that article’s reading time."
+    : "The blend is Σ(weight × value). Compare it with the simple average: does weighting related records help your problem?";
+  el("average").textContent = (data.records.reduce((sum, r) => sum + r.value, 0) / data.records.length).toFixed(2);
+  el("feature-order").textContent = `Feature order: ${data.features.join(" · ")}`;
+  el("recipe-bars").replaceChildren(...result.rows.map((row) => {
+    const div = document.createElement("div"); div.className = "weight-bar";
+    const text = document.createElement("span"); text.textContent = `${row.label} · ${(row.weight * 100).toFixed(1)}%`;
+    const bar = document.createElement("progress"); bar.max = 1; bar.value = row.weight;
+    bar.setAttribute("aria-label", `${row.label} contribution`); div.append(text, bar); return div;
+  }));
+  el("recipe-rows").replaceChildren(...result.rows.map((row) => {
+    const tr = document.createElement("tr");
+    for (const v of [row.label, row.key.join(", "), row.score.toFixed(3), (row.weight * 100).toFixed(1) + "%", row.value, row.contribution.toFixed(2)]) {
+      const td = document.createElement("td"); td.textContent = v; tr.append(td);
+    }
+    return tr;
+  }));
+  el("calculation").textContent = `const { weights, output } = attention(\n  [query],                 // ${JSON.stringify(data.query)}\n  records.map(r => r.key), // matching features\n  records.map(r => [r.value]),\n  { temperature: ${temperature} }\n);\n// scores = dot(query, key) / sqrt(${data.features.length}) / ${temperature}\n// weights = softmax(scores)\n// output = sum(weight × value)`;
+  el("starter").textContent = `import { runRecipe } from './packages/attention-is-all-you-need/recipes.mjs';\n\nconst data = ${JSON.stringify(editableData(), null, 2)};\n\nconst result = runRecipe(data, { temperature: ${temperature} });\nconsole.table(result.rows);\nconsole.log(result.match, result.output, data.unit);`;
+}
+function loadRecipe(index) {
+  selected = index; data = structuredClone(recipes[index]);
+  el("question").textContent = data.question;
+  el("try").textContent = data.try; el("adapt").textContent = data.adapt;
+  el("temperature").value = 0.25; el("error").textContent = "";
+  for (let i = 0; i < recipes.length; i++) el(`recipe-${i}`).setAttribute("aria-pressed", String(i === index));
+  drawFeatures(); render(); syncEditor();
+}
+el("temperature").oninput = render;
+el("editor").ontoggle = () => { if (el("editor").open) syncEditor(); };
+el("apply").onclick = () => {
+  try {
+    if (el("recipe-json").value.length > 16000) throw Error("Keep the example under 16,000 characters.");
+    const candidate = JSON.parse(el("recipe-json").value);
+    runRecipe(candidate);
+    data = candidate;
+    el("question").textContent = "Which of your records matches this request?";
+    el("try").textContent = "Move one feature at a time. Try all zeros, then compare a focused request with a mixed one.";
+    el("adapt").textContent = "Your data is running locally. The starter below includes the current request and temperature.";
+    for (let i = 0; i < recipes.length; i++) el(`recipe-${i}`).setAttribute("aria-pressed", "false");
+    el("error").textContent = ""; drawFeatures(); render();
+  } catch (error) { el("error").textContent = `Data not applied: ${error.message} The last valid example is still shown.`; }
+};
+el("restore").onclick = () => loadRecipe(selected);
+for (let i = 0; i < recipes.length; i++) el(`recipe-${i}`).onclick = () => loadRecipe(i);
+loadRecipe(0);
+
+
+if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embedded');
+new ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);</script></body></html>

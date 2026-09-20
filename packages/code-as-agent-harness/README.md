@@ -44,3 +44,24 @@ The smaller sorting/repair kernel remains in `index.mjs` for comparison and test
 `workflow.mjs` is the public walkthrough. Paper:
 https://arxiv.org/abs/2605.18747v1 (a survey, not a benchmark to reproduce).
 Original example code: MIT.
+
+## Check a configuration migration
+
+Open `dist/harness-migration.html` or run:
+
+```sh
+node packages/code-as-agent-harness/migration-cli.mjs
+node packages/code-as-agent-harness/migration-cli.mjs config.json
+```
+
+The same v1 input goes through a deliberately incomplete top-level patch and an
+explicit v2 migration. Independent checks verify zero and nested durations,
+project identity, exact output fields and unrelated settings. No files are written.
+This demonstrates a tool/check boundary an agent can use, not an autonomous model.
+
+```js
+import { migrateConfig, verifyMigration } from './migration.mjs';
+const result = migrateConfig(input);
+const checks = verifyMigration(input, result);
+// Keep the original artifact and reject a failed check before writing.
+```

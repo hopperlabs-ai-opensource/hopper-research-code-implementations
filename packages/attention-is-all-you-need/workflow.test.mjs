@@ -58,3 +58,11 @@ test("missing or conflicting records are not silently answered", () => {
 	);
 	assert.throws(() => trainLookup({ epochs: 10000 }));
 });
+
+test('displayed queries reproduce actual scores in learned and equal modes', () => {
+  for (const uniform of [false, true]) {
+    const result = lookupDelivery(model, deliverySample, 'Mira', { uniform });
+    assert.deepEqual(result.scores, result.keys.map(key =>
+      result.query.reduce((sum, x, i) => sum + x * key[i], 0) / Math.sqrt(result.query.length)));
+  }
+});

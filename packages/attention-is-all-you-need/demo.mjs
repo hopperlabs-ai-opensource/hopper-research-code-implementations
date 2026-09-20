@@ -19,7 +19,7 @@ for (const option of [...el("person").options])
 el("lossBefore").textContent = trainedModel.history[0].loss.toFixed(3);
 el("lossAfter").textContent = trainedModel.history.at(-1).loss.toFixed(3);
 el("source").textContent =
-	lookupDelivery.toString() + "\n\n" + trainLookup.toString();
+	attention.toString() + "\n\n" + lookupDelivery.toString() + "\n\n" + trainLookup.toString();
 el("history").textContent = JSON.stringify(trainedModel.history, null, 2);
 function drawRecords() {
 	el("records").replaceChildren(
@@ -53,8 +53,8 @@ function showStep() {
 	const steps = [
 		[
 			"Represent the question",
-			"The chosen person selects a learned query vector. Each current record selects a learned key. Training adjusted these vectors so matching identities score well.",
-			"query = Q[person]\nkeys = records.map(record => K[record.person])",
+			mode === "uniform" ? "Equal attention replaces the query with zeros. Every dot product is zero, so every record receives the same weight." : mode === "untrained" ? "The chosen person selects a random query vector. Keys are also random: no training updates have been applied." : "The chosen person selects a learned query vector. Each current record selects a learned key. Training adjusted these vectors so matching identities score well.",
+			(mode === "uniform" ? "query = Q[person].map(() => 0)" : "query = Q[person]") + "\nkeys = records.map(record => K[record.person])",
 			{ query: computed.query, keys: computed.keys },
 		],
 		[
@@ -132,6 +132,7 @@ function render() {
 	);
 	for (const id of ["trained", "uniform", "untrained"])
 		el(id).setAttribute("aria-pressed", String(mode === id));
+	drawHeatmap();
 	showStep();
 }
 for (const id of ["trained", "uniform", "untrained"])
@@ -167,3 +168,21 @@ el("next").onclick = () => {
 };
 drawRecords();
 render();
+
+function drawHeatmap() {
+  const header = document.createElement("tr");
+  for (const text of ["Question ↓ / Record →", ...records.map(r => r.person)]) {
+    const th = document.createElement("th"); th.scope = "col"; th.textContent = text; header.append(th);
+  }
+  el("heatmap-head").replaceChildren(header);
+  el("heatmap-body").replaceChildren(...records.map(row => {
+    const tr = document.createElement("tr"); tr.dataset.selected = String(row.person === el("person").value);
+    const th = document.createElement("th"); th.scope = "row"; th.textContent = row.person; tr.append(th);
+    const result = lookupDelivery(mode === "untrained" ? untrainedModel : trainedModel, records, row.person, { uniform: mode === "uniform" });
+    for (const weight of result.weights) {
+      const td = document.createElement("td"); td.dataset.level = Math.min(5, Math.floor(weight * 6));
+      td.textContent = (weight * 100).toFixed(1) + "%"; tr.append(td);
+    }
+    return tr;
+  }));
+}

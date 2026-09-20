@@ -1,43 +1,45 @@
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-const names = ["attention-is-all-you-need", "code-as-agent-harness"];
+import { Script } from "node:vm";
+
+const attention = "packages/attention-is-all-you-need";
+const harness = "packages/code-as-agent-harness";
+const pages = [
+  { name: "index", title: "Small, runnable ideas", body: "scripts/index.html", sources: [] },
+  { name: "attention-is-all-you-need", title: "Find a changing fact", body: `${attention}/demo.html`, sources: [`${attention}/index.mjs`, `${attention}/workflow.mjs`, `${attention}/demo.mjs`] },
+  { name: "attention-recipes", title: "Give attention a job", body: `${attention}/recipes-demo.html`, sources: [`${attention}/index.mjs`, `${attention}/recipes.mjs`, `${attention}/recipes-demo.mjs`] },
+  { name: "code-as-agent-harness", title: "Build a verified report", body: `${harness}/demo.html`, sources: [`${harness}/index.mjs`, `${harness}/workflow.mjs`, `${harness}/demo.mjs`] },
+  { name: "harness-migration", title: "Check a migration", body: `${harness}/migration-demo.html`, sources: [`${harness}/migration.mjs`, `${harness}/migration-demo.mjs`] },
+  { name: "jev", title: "Route a request", body: "packages/jev/demo.html", sources: ["packages/jev/index.mjs", "packages/jev/demo.mjs"] },
+];
 await mkdir("dist", { recursive: true });
 const hash = (s) => createHash("sha256").update(s).digest("base64");
+const css = await readFile("scripts/demo.css", "utf8");
 const manifest = {
-	schema: "hopper.research.examples.v1",
-	version: JSON.parse(await readFile("package.json", "utf8")).version,
-	license: "MIT",
-	files: [],
+  schema: "hopper.research.examples.v1",
+  version: JSON.parse(await readFile("package.json", "utf8")).version,
+  license: "MIT",
+  files: [],
 };
-for (const name of names) {
-	const css = await readFile("scripts/demo.css", "utf8");
-	const core = (
-		await readFile(`packages/${name}/index.mjs`, "utf8")
-	).replaceAll("export function", "function");
-	const workflow = (await readFile(`packages/${name}/workflow.mjs`, "utf8"))
-		.replace(/^import .*;\n/gm, "")
-		.replaceAll("export function", "function")
-		.replaceAll("export const", "const");
-	const resize =
-		"\nnew ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);";
-	const js =
-		core +
-		"\n" +
-		workflow +
-		"\n" +
-		(await readFile(`packages/${name}/demo.mjs`, "utf8")) +
-		resize;
-	const body = await readFile(`packages/${name}/demo.html`, "utf8");
-	const csp = `default-src 'none'; script-src 'sha256-${hash(js)}'; style-src 'sha256-${hash(css)}'; base-uri 'none'; form-action 'none'`;
-	const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="${csp}"><title>${name} · Hopper research</title><style>${css}</style></head><body>${body}<script>${js}</script></body></html>`;
-	const file = name + ".html";
-	await writeFile("dist/" + file, html);
-	manifest.files.push({
-		file,
-		sha256: createHash("sha256").update(html).digest("hex"),
-		bytes: Buffer.byteLength(html),
-		csp,
-	});
+for (const page of pages) {
+  // Only our explicit source list is bundled; no user code is interpreted.
+  const parts = [];
+  for (const path of page.sources) {
+    parts.push((await readFile(path, "utf8"))
+      .replace(/^import .*;\r?\n/gm, "")
+      .replaceAll("export function", "function")
+      .replaceAll("export const", "const"));
+  }
+  parts.push("\nif(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embedded');\nnew ResizeObserver(()=>parent.postMessage({type:'hopper-research-height',height:Math.ceil(document.body.getBoundingClientRect().height)},'*')).observe(document.body);");
+  const js = parts.join("\n");
+  new Script(js, { filename: page.name }); // Catch unsupported bundle syntax during check.
+  const body = await readFile(page.body, "utf8");
+  const nav = `<nav class="site-nav" aria-label="Experiments"><a class="brand" href="index.html">Hopper / Research</a><div>${pages.map((p, i) => `<a href="${p.name}.html"${p.name === page.name ? ' aria-current="page"' : ""}>${["Start here", "Learn attention", "Use attention", "Verify a report", "Check a migration", "Typed decisions"][i]}</a>`).join("")}</div></nav>`;
+  const csp = `default-src 'none'; script-src 'sha256-${hash(js)}'; style-src 'sha256-${hash(css)}'; base-uri 'none'; form-action 'none'`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="${csp}"><title>${page.title} · Hopper research</title><style>${css}</style></head><body>${nav}${body}<script>${js}</script></body></html>`;
+  const file = page.name + ".html";
+  await writeFile("dist/" + file, html);
+  manifest.files.push({ file, sha256: createHash("sha256").update(html).digest("hex"), bytes: Buffer.byteLength(html), csp });
 }
 await writeFile("dist/manifest.json", JSON.stringify(manifest, null, 2) + "\n");
 console.log(JSON.stringify(manifest, null, 2));

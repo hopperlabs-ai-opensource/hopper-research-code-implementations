@@ -53,3 +53,11 @@ test("invalid and oversized inputs fail closed", () => {
 	assert.throws(() => attention([[1]], [[1, 2]], [[1]]));
 	assert.throws(() => attention([[1]], [[1]], [[1]], { temperature: 0 }));
 });
+
+test('nonzero positions use paired sine/cosine frequencies', () => {
+  const result = positionalEncoding(3, 4);
+  for (const pos of [1, 2]) {
+    const expected = [Math.sin(pos), Math.cos(pos), Math.sin(pos / 100), Math.cos(pos / 100)];
+    expected.forEach((value, i) => assert.ok(Math.abs(result[pos][i] - value) < 1e-12));
+  }
+});

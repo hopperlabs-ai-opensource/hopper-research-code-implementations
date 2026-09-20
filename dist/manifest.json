@@ -1,19 +1,43 @@
 {
   "schema": "hopper.research.examples.v1",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "files": [
     {
+      "file": "index.html",
+      "sha256": "7e78104624077c21fc72c74a6570ed1e5d5067fcc5a632922bb3671cfd80827a",
+      "bytes": 13341,
+      "csp": "default-src 'none'; script-src 'sha256-qp9sQjxI0Q5Varqm8B/P6q8nJ2hFu36dPFcJaOuUc/U='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+    },
+    {
       "file": "attention-is-all-you-need.html",
-      "sha256": "5021d6c817e7d89fc38b182472a6b75447dd0d9f516f32dec72b94169b952ea7",
-      "bytes": 18909,
-      "csp": "default-src 'none'; script-src 'sha256-ecJiXq+mRxE4W7E/QNiOKQOBG990Ew2/U6XrD9g2w6M='; style-src 'sha256-W5KVYmoEzxZYDCARSKqElfJ/M10WNcQIsYItS1UhuUE='; base-uri 'none'; form-action 'none'"
+      "sha256": "7adb0c47663c233023a6f51b3ef32d8f0550c1dda8dc4af4c9cd517a1602e20f",
+      "bytes": 26796,
+      "csp": "default-src 'none'; script-src 'sha256-CQki+ODloVcMyG25mBUtr3aUN4YV95lMjsyJyXKyDQQ='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "file": "attention-recipes.html",
+      "sha256": "ee27df8290d12e6985ad6d30daece436ced6b4efeaf0849d892d059a905ae34c",
+      "bytes": 24660,
+      "csp": "default-src 'none'; script-src 'sha256-Mil7pWElJAdlaSLGEJ9V3eoUSk+8Z/DKMBi5o1Fbado='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
     },
     {
       "file": "code-as-agent-harness.html",
-      "sha256": "0476d36aee153e972e59e956a0ad92570d6e41f829e98792d4949e60d59951de",
-      "bytes": 19404,
-      "csp": "default-src 'none'; script-src 'sha256-iyK2i/JX13pm+1/+XJ08N95IRhfyw4tk8MknMAK5Nfc='; style-src 'sha256-W5KVYmoEzxZYDCARSKqElfJ/M10WNcQIsYItS1UhuUE='; base-uri 'none'; form-action 'none'"
+      "sha256": "62cfa1eefae9d16541f7279a3df2a0e910d55000ec0ce8c128779669050fccba",
+      "bytes": 26009,
+      "csp": "default-src 'none'; script-src 'sha256-LihqrtZr9/4/Jiw00Cp9lne3RRXo6jPMoJsEci0A4ik='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "file": "harness-migration.html",
+      "sha256": "57e5b37308ed1d44f93249ae7e9e6dc1a4b58821c447645eae3ed9469f917269",
+      "bytes": 15643,
+      "csp": "default-src 'none'; script-src 'sha256-R1HeAQwv7lXVBuWVkB4xvWgHodze6tx81aIJ6DpQvkc='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "file": "jev.html",
+      "sha256": "550c9db0582dcce7a72d2f7d176b1e03db6fdef5be74d51935c0eb7670bb5f3b",
+      "bytes": 19631,
+      "csp": "default-src 'none'; script-src 'sha256-tgOqjLTXSxbB3Zd9IlFbe+glR+nVg8g1HOZAkhrkaH8='; style-src 'sha256-oGZC8rBZDQJistqcgSeKn59GfA3E36CkEEB+1/BZpwQ='; base-uri 'none'; form-action 'none'"
     }
   ]
 }
