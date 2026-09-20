@@ -11,9 +11,9 @@
     },
     {
       "file": "code-as-agent-harness.html",
-      "sha256": "db01f767a41b81a957791fb590283fe3df38696f4a76b53abc3245f280f1fff8",
-      "bytes": 19289,
-      "csp": "default-src 'none'; script-src 'sha256-W3+uLsMUeb5iiDujdimCFXnuW1Cv5t3pDIY8zxAZ5uQ='; style-src 'sha256-W5KVYmoEzxZYDCARSKqElfJ/M10WNcQIsYItS1UhuUE='; base-uri 'none'; form-action 'none'"
+      "sha256": "0476d36aee153e972e59e956a0ad92570d6e41f829e98792d4949e60d59951de",
+      "bytes": 19404,
+      "csp": "default-src 'none'; script-src 'sha256-iyK2i/JX13pm+1/+XJ08N95IRhfyw4tk8MknMAK5Nfc='; style-src 'sha256-W5KVYmoEzxZYDCARSKqElfJ/M10WNcQIsYItS1UhuUE='; base-uri 'none'; form-action 'none'"
     }
   ]
 }

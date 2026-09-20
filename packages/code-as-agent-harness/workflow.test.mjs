@@ -73,3 +73,17 @@ test("verification rejects altered content with a valid source record number", (
 		false,
 	);
 });
+
+test("stale conflicts cannot hide behind a newer record or input order", () => {
+	const header = "id,title,status,priority,updated";
+	const rows = [
+		"A,Issue,open,P1,2026-09-17",
+		"A,Issue,closed,P1,2026-09-16",
+		"A,Issue,open,P1,2026-09-16",
+	];
+	for (const ordered of [rows, [...rows].reverse()])
+		assert.throws(
+			() => releaseReport(header + "\n" + ordered.join("\n")),
+			/Conflicting/,
+		);
+});

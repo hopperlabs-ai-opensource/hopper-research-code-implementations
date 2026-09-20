@@ -78,18 +78,21 @@ export function parseTickets(csv) {
 }
 export function latestTickets(rows) {
 	const latest = new Map();
+	const byDate = new Map();
 	for (const row of rows) {
 		const old = latest.get(row.id);
+		const datedKey = `${row.id}:${row.updated}`;
+		const dated = byDate.get(datedKey);
 		if (
-			old &&
-			old.updated === row.updated &&
-			(old.status !== row.status ||
-				old.priority !== row.priority ||
-				old.title !== row.title)
+			dated &&
+			(dated.status !== row.status ||
+				dated.priority !== row.priority ||
+				dated.title !== row.title)
 		)
 			throw Error(
 				`Conflicting records for ${row.id} on ${row.updated}. Resolve the conflict before publishing.`,
 			);
+		byDate.set(datedKey, row);
 		if (!old || old.updated < row.updated) latest.set(row.id, row);
 	}
 	return [...latest.values()];
