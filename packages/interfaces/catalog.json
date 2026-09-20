@@ -1,0 +1,843 @@
+{
+  "schema": "hopper.research.catalog.v1",
+  "source": "https://hopperlabs.ai/research",
+  "entries": [
+    {
+      "kind": "paper",
+      "relatedProductSlugs": [],
+      "slug": "code-as-agent-harness",
+      "title": "Code as Agent Harness",
+      "authors": [
+        "Xuying Ning",
+        "Katherine Tieu",
+        "Dongqi Fu",
+        "Tianxin Wei",
+        "Zihao Li",
+        "Yuanchen Bei",
+        "Jiaru Zou",
+        "Mengting Ai",
+        "Zhining Liu",
+        "Ting-Wei Li",
+        "Lingjie Chen",
+        "Yanjun Zhao",
+        "Ke Yang",
+        "Bingxuan Li",
+        "Cheng Qian",
+        "Gaotang Li",
+        "Xiao Lin",
+        "Zhichen Zeng",
+        "Ruizhong Qiu",
+        "Sirui Chen",
+        "Yifan Sun",
+        "Xiyuan Yang",
+        "Ruida Wang",
+        "Rui Pan",
+        "Chenyuan Yang",
+        "Dylan Zhang",
+        "Liri Fang",
+        "Zikun Cui",
+        "Yang Cao",
+        "Pan Chen",
+        "Dorothy Sun",
+        "Ren Chen",
+        "Mahesh Srinivasan",
+        "Nipun Mathur",
+        "Yinglong Xia",
+        "Hong Li",
+        "Hong Yan",
+        "Pan Lu",
+        "Lingming Zhang",
+        "Tong Zhang",
+        "Hanghang Tong",
+        "Jingrui He"
+      ],
+      "date": "2026-05-18",
+      "version": "2605.18747v1",
+      "category": "Agent systems",
+      "topics": [
+        "Agents",
+        "Execution",
+        "Verification"
+      ],
+      "summary": "Turn a messy ticket export into a release-blocker report you can verify. See how executable steps, source records and checks turn an agent’s answer into inspectable work.",
+      "sourceUrl": "https://arxiv.org/abs/2605.18747v1",
+      "readerUrl": "https://arxiv.org/html/2605.18747v1",
+      "pdfUrl": "https://arxiv.org/pdf/2605.18747v1",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "findings": [
+        "The survey organizes harness design around interfaces, mechanisms and scaling to multiple agents.",
+        "Execution feedback and persistent artifacts make an agent’s progress inspectable."
+      ],
+      "limitations": [
+        "A survey of architectures, not one algorithm or a benchmark result to reproduce."
+      ],
+      "sections": [
+        {
+          "title": "From an answer to an executable process",
+          "text": "The paper connects reasoning, action and environment models through code. Planning, memory and tools become parts of an execution loop, with feedback determining what happens next.",
+          "locator": "Abstract; sections 2–3"
+        },
+        {
+          "title": "A claim meets a check",
+          "text": "A quick priority filter reports a bug that has already been resolved. Our verifier rejects that draft. The workflow selects each issue’s latest update, checks its status and retains the record that supports the result.",
+          "locator": "Hopper example; inspired by feedback-driven control"
+        },
+        {
+          "title": "Artifacts connect the steps",
+          "text": "The trace preserves the parsed source, draft, checks and final report. Introduce a conflicting update to see the workflow stop. These are deterministic tools an agent could call; there is no hidden model generating the report.",
+          "locator": "Hopper implementation scope"
+        }
+      ],
+      "diagram": "Goal + constraints\n        |\n        v\nPlan -> Execute -> Artifact -> Verify\n           ^                    |\n           |    failure         | success\n           +---- Repair <-------+----> Result\n                 (bounded)",
+      "preview": "PLAN -> EXECUTE -> VERIFY\n          ^          |\n          +-- REPAIR-+",
+      "references": [
+        {
+          "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+          "url": "https://arxiv.org/abs/2210.03629",
+          "locator": "Survey reference 144; section 3.1.1",
+          "reason": "A selected reference for tracing actions and observations."
+        }
+      ],
+      "related": [
+        {
+          "slug": "attention-is-all-you-need",
+          "reason": "Two levels to explore: computation inside a model, and execution around a model. This is an editorial comparison, not a claim of direct citation."
+        }
+      ],
+      "demoScope": "Editable ticket CSV → latest issue state → release-blocker report with source records and verification. Deterministic local tools; no live LLM.",
+      "walkthrough": {
+        "title": "A report you can trace back to the source.",
+        "problem": "You need to decide what still blocks a release. The export mixes old and new updates. A convincing summary can quietly include a fixed bug—or miss one that reopened.",
+        "outcome": "An editable export becomes a checked report, with a source record for every blocker. See a bad draft fail, inspect the correction, then break the input yourself.",
+        "experiments": [
+          "Resolve a blocker: it should disappear from the report.",
+          "Introduce conflicting updates: the workflow should stop.",
+          "Step through the actual code and the artifacts it produces."
+        ],
+        "application": "Use this pattern for agent-generated reports, migrations or repository changes: define the allowed input, preserve artifacts, and make explicit checks a condition of returning success. Here the model’s role would be to choose or compose the workflow; the tools do the parsing and the verifier checks the result.",
+        "boundary": "This example defines a blocker as the latest unresolved P0/P1 issue. A team may use a different rule. Verification proves these stated checks, not that the export is complete or that the release is safe. It is a deterministic implementation of a harness pattern, not an LLM agent or a reproduction of the survey.",
+        "code": "import { releaseReport } from './packages/code-as-agent-harness/workflow.mjs';\n\nconst { report, checks, trace } = releaseReport(csv, {\n  priorities: ['P0', 'P1']\n});\n// Invalid or conflicting source records throw.\n// Each returned issue includes its supporting record number.\nconsole.log(report, checks);",
+        "command": "node packages/code-as-agent-harness/cli.mjs tickets.csv"
+      },
+      "repositoryUrl": "https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations/tree/main/packages/code-as-agent-harness",
+      "institutions": [
+        {
+          "name": "University of Illinois Urbana-Champaign",
+          "url": "https://illinois.edu/"
+        },
+        {
+          "name": "Meta",
+          "url": "https://ai.meta.com/"
+        },
+        {
+          "name": "Stanford University",
+          "url": "https://www.stanford.edu/"
+        }
+      ],
+      "brief": "This survey examines code as the environment around an agent: interfaces for action, mechanisms for memory and feedback, and ways to coordinate multiple agents. A model’s proposed next step becomes executable work whose artifacts and results can guide what happens next.",
+      "significance": [
+        {
+          "title": "An answer becomes inspectable work",
+          "text": "The survey brings together designs in which code connects reasoning, tools and execution feedback. A persistent artifact gives a later step something concrete to inspect, rather than depending entirely on a conversational summary.",
+          "url": "https://arxiv.org/html/2605.18747v1",
+          "locator": "Abstract; sections 2–3"
+        },
+        {
+          "title": "Failure can guide the next step",
+          "text": "Execution results can expose an incorrect assumption and inform repair. This is an architectural pattern across surveyed systems, not a guarantee that an agent will fix every error or a single benchmark reproduced here.",
+          "url": "https://arxiv.org/html/2605.18747v1",
+          "locator": "Mechanisms and feedback"
+        },
+        {
+          "title": "Start with something worth verifying",
+          "text": "Our examples turn a ticket export into a traceable report and migrate a configuration without losing its meaning. Both compare a plausible first attempt with explicit transformations and independent checks.",
+          "url": "https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations/tree/main/packages/code-as-agent-harness",
+          "locator": "Hopper implementations"
+        }
+      ],
+      "comparison": {
+        "before": {
+          "label": "Unchecked result",
+          "steps": [
+            "Request",
+            "Plausible answer",
+            "Assume it worked"
+          ]
+        },
+        "after": {
+          "label": "Artifact + verification",
+          "steps": [
+            "Bounded transformation",
+            "Inspectable artifact",
+            "Check → accept or repair"
+          ]
+        },
+        "caption": "The examples implement deterministic tools and checks. An agent could select or compose these steps; no hidden model is driving these browser demonstrations."
+      },
+      "examples": [
+        {
+          "id": "report",
+          "title": "Verify a release-blocker report",
+          "artifact": "code-as-agent-harness.html",
+          "description": "An export mixes old and new issue updates. Build the current blocker list with the source record that supports each result.",
+          "comparison": "Run a simple priority filter and a latest-state workflow on the same CSV. The verifier exposes fixed bugs incorrectly retained by the first draft and rejects conflicting source updates.",
+          "command": "node packages/code-as-agent-harness/cli.mjs"
+        },
+        {
+          "id": "migration",
+          "title": "Check a configuration migration",
+          "artifact": "harness-migration.html",
+          "description": "Convert seconds to milliseconds while preserving zero, nested project settings and unrelated fields.",
+          "comparison": "A quick top-level patch uses a truthy default and misses nested fields. Compare its actual output with an explicit migration and four checks on exactly the same configuration.",
+          "command": "node packages/code-as-agent-harness/migration-cli.mjs"
+        }
+      ],
+      "architecture": {
+        "title": "An executable loop with a check before success",
+        "source": "https://arxiv.org/html/2605.18747v1",
+        "caption": "Hopper’s schematic of a pattern discussed in the survey, not a single prescribed architecture. Select a block; follow the repair edge when a check fails.",
+        "nodes": [
+          {
+            "id": "goal",
+            "label": "Goal + input contract",
+            "column": 1,
+            "row": 0,
+            "detail": "Define the requested result, allowed inputs and constraints. Our examples use a ticket schema or a versioned configuration contract."
+          },
+          {
+            "id": "plan",
+            "label": "Select a bounded operation",
+            "column": 1,
+            "row": 1,
+            "detail": "An agent can propose or compose a step. The browser examples choose deterministic operations so the transformation is inspectable without a live model."
+          },
+          {
+            "id": "execute",
+            "label": "Execute → retain artifact",
+            "column": 1,
+            "row": 2,
+            "detail": "Run the transformation and retain its output with the source data. This makes a report or proposed change available for inspection and later checks."
+          },
+          {
+            "id": "verify",
+            "label": "Independent checks",
+            "column": 1,
+            "row": 3,
+            "detail": "Check the artifact against the contract and source: current issue state, preserved durations, identity, completeness or unchanged fields."
+          },
+          {
+            "id": "repair",
+            "label": "Repair or stop",
+            "column": 0,
+            "row": 4,
+            "detail": "A failed check provides concrete feedback. Repair is bounded; ambiguous source data stops the workflow. Failure cannot silently become success."
+          },
+          {
+            "id": "result",
+            "label": "Verified result + evidence",
+            "column": 2,
+            "row": 4,
+            "detail": "Return the artifact with the checks that passed and the records supporting it. This establishes the stated checks, not every possible property of the real world."
+          }
+        ],
+        "edges": [
+          {
+            "from": "goal",
+            "to": "plan",
+            "label": "Constraints"
+          },
+          {
+            "from": "plan",
+            "to": "execute",
+            "label": "Proposed step"
+          },
+          {
+            "from": "execute",
+            "to": "verify",
+            "label": "Artifact and source"
+          },
+          {
+            "from": "verify",
+            "to": "repair",
+            "label": "Failure"
+          },
+          {
+            "from": "repair",
+            "to": "plan",
+            "label": "Bounded retry"
+          },
+          {
+            "from": "verify",
+            "to": "result",
+            "label": "Success"
+          }
+        ]
+      },
+      "context": [
+        {
+          "decision": "Use it",
+          "situation": "A generated report or change needs defensible evidence",
+          "recommendation": "Retain inputs and artifacts, then independently check the result before returning success. Start with one explicit invariant.",
+          "alternative": "Use the report and migration examples as small tool/check boundaries an agent can call."
+        },
+        {
+          "decision": "Start simpler",
+          "situation": "The work is a fixed, deterministic transformation",
+          "recommendation": "A plain function plus tests may be enough. These browser examples themselves do not need an LLM to execute.",
+          "alternative": "Add agent planning only when choosing or adapting the steps provides value."
+        },
+        {
+          "decision": "Avoid here",
+          "situation": "The source is ambiguous or a check cannot establish correctness",
+          "recommendation": "Stop and expose the missing evidence. A confident answer or a passing unrelated test does not resolve conflicting records.",
+          "alternative": "Request better input or an appropriate review; document what the checks actually establish."
+        },
+        {
+          "decision": "Avoid here",
+          "situation": "Unrestricted code execution or unbounded retries",
+          "recommendation": "Do not turn an educational harness into a shell with unlimited authority. The examples accept bounded data and call fixed functions.",
+          "alternative": "Production execution needs the owning runtime’s isolation, permissions, timeouts and durable recovery."
+        }
+      ]
+    },
+    {
+      "kind": "paper",
+      "relatedProductSlugs": [],
+      "slug": "attention-is-all-you-need",
+      "title": "Attention Is All You Need",
+      "authors": [
+        "Ashish Vaswani",
+        "Noam Shazeer",
+        "Niki Parmar",
+        "Jakob Uszkoreit",
+        "Llion Jones",
+        "Aidan N. Gomez",
+        "Lukasz Kaiser",
+        "Illia Polosukhin"
+      ],
+      "date": "2017-06-12",
+      "version": "1706.03762v7",
+      "category": "Model architecture",
+      "topics": [
+        "Attention",
+        "Transformers",
+        "Neural networks"
+      ],
+      "summary": "How does a model find the relevant fact in changing context? Train a small attention head, change a delivery schedule, and watch its answer follow the record—not a memorized date.",
+      "sourceUrl": "https://arxiv.org/abs/1706.03762v7",
+      "readerUrl": "https://arxiv.org/html/1706.03762v7",
+      "pdfUrl": "https://arxiv.org/pdf/1706.03762v7",
+      "license": "arXiv distribution license",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html",
+      "findings": [
+        "The original Transformer combines an encoder and a decoder with attention and feed-forward layers.",
+        "Attention compares queries with keys and uses the resulting weights to mix values."
+      ],
+      "limitations": [
+        "A trained query/key lookup over structured records, not a full Transformer, natural-language model or reproduction of translation benchmarks. Exact schedule lookup in production should use ordinary code."
+      ],
+      "sections": [
+        {
+          "title": "Ask for a fact, then change it",
+          "text": "Mira’s delivery is Tuesday. Change it to Thursday: learned attention still selects Mira’s record, but its value now supplies Thursday. The training teaches identity matching; the delivery date comes from the current context.",
+          "locator": "Section 3.2.1, equation (1)"
+        },
+        {
+          "title": "Many views of the same sequence",
+          "text": "Multiple heads work with different projections. Their outputs are concatenated and projected again. Position information is added separately; masked decoder attention prevents access to future positions.",
+          "locator": "Sections 3.2.2–3.2.3 and 3.5"
+        },
+        {
+          "title": "What this example lets you test",
+          "text": "Compare learned attention with untrained weights and equal weighting. Reorder the records to separate content selection from position. Every score, softmax weight and output value comes from the computation visible in the walkthrough.",
+          "locator": "Hopper implementation scope"
+        }
+      ],
+      "diagram": "Input tokens + positions\n          |\n          v\n     Encoder stack ---------+\n                           | keys / values\nPrevious outputs           |\n     + positions           v\n          |          Cross-attention\n          v                |\n Masked self-attention ----+\n                           v\n                 Feed-forward + projection\n                           |\n                           v\n                  Next-token probabilities\n\nCore: softmax(Q K^T / sqrt(d_k)) V",
+      "preview": "Q x K^T -> SCALE -> SOFTMAX\n                      |\n                      v\n                WEIGHTS x V",
+      "references": [
+        {
+          "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+          "url": "https://arxiv.org/abs/1409.0473",
+          "locator": "Paper reference 2",
+          "reason": "A selected predecessor: attention before the Transformer."
+        }
+      ],
+      "related": [
+        {
+          "slug": "code-as-agent-harness",
+          "reason": "Move from the model’s attention calculation to the execution and verification machinery around an agent. An editorial connection across different architectural levels."
+        }
+      ],
+      "demoScope": "A small attention head with query/key embeddings trained by gradient descent in the browser. Structured name/day records expose context retrieval; not a language model.",
+      "walkthrough": {
+        "title": "The fact changes. The model follows.",
+        "problem": "An answer needs a specific fact from the current context. Averaging every fact together loses the relationship. Memorizing an answer becomes stale the moment the context changes.",
+        "outcome": "Train query/key matching, ask whose delivery you care about, then change the day. The answer is assembled from the current record. See precisely which record contributed and how.",
+        "experiments": [
+          "Change Mira’s delivery day without retraining.",
+          "Reorder the records: the answer should stay the same.",
+          "Compare learned attention, equal attention and untrained weights."
+        ],
+        "application": "This isolates the retrieval operation inside attention: a query selects relevant information by matching keys, then combines values. In a Transformer, learned projections form these vectors from token representations and multiple heads operate together. Understanding this operation helps you read model code and reason about context, masking and information flow.",
+        "boundary": "Use a database query for a real delivery schedule. The schedule here makes a neural operation legible; it is not a claim that a neural network is the best tool for this task. The model knows six name identities and five day values. It does not parse language, understand arbitrary names or implement the complete Transformer.",
+        "code": "import { trainLookup, lookupDelivery } from './packages/attention-is-all-you-need/workflow.mjs';\n\nconst model = trainLookup({ epochs: 800, seed: 42 });\nconst context = [\n  { person: 'Mira', day: 'Thursday' },\n  { person: 'Noah', day: 'Friday' }\n];\nconsole.log(lookupDelivery(model, context, 'Mira'));\n// answer: Thursday; also returns scores, weights and values.",
+        "command": "node packages/attention-is-all-you-need/cli.mjs"
+      },
+      "repositoryUrl": "https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations/tree/main/packages/attention-is-all-you-need",
+      "institutions": [
+        {
+          "name": "Google Brain",
+          "url": "https://arxiv.org/html/1706.03762v7"
+        },
+        {
+          "name": "Google Research",
+          "url": "https://research.google/"
+        },
+        {
+          "name": "University of Toronto",
+          "url": "https://www.utoronto.ca/"
+        }
+      ],
+      "brief": "The Transformer is a sequence-to-sequence architecture built around attention. At each layer, a token can gather information from other positions by comparing a query with their keys, then mixing their values. Multiple heads, position information and feed-forward layers make this more than a single lookup.",
+      "significance": [
+        {
+          "title": "A different route through a sequence",
+          "text": "Recurrent networks pass state through successive positions; convolutional models connect positions through local layers. This paper used attention throughout its encoder and decoder, allowing distant positions to interact directly within a layer.",
+          "url": "https://arxiv.org/html/1706.03762v7",
+          "locator": "Sections 1 and 4"
+        },
+        {
+          "title": "More parallel work during training",
+          "text": "Removing recurrence reduced the sequential work within a training sequence. The authors reported strong translation results with less training time than the systems they compared. Autoregressive generation still predicts successive output tokens; parallel training does not mean every part runs at once.",
+          "url": "https://arxiv.org/html/1706.03762v7",
+          "locator": "Sections 3 and 6"
+        },
+        {
+          "title": "A mechanism you can inspect",
+          "text": "Our small labs expose scores, weights and contributions. They isolate attention’s selection and mixing operation, so you can change inputs and follow each result. They do not reproduce the full Transformer or its translation results.",
+          "url": "https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations/tree/main/packages/attention-is-all-you-need",
+          "locator": "Hopper implementations"
+        }
+      ],
+      "comparison": {
+        "before": {
+          "label": "Recurrent path · schematic",
+          "steps": [
+            "Position 1 → state",
+            "Position 2 → state",
+            "Position 3 → state"
+          ]
+        },
+        "after": {
+          "label": "Self-attention · one position’s view",
+          "steps": [
+            "Query ↔ all keys",
+            "Normalize relevance",
+            "Mix their values"
+          ]
+        },
+        "caption": "A conceptual comparison, not a runtime benchmark. The original Transformer also needs position encodings, multiple heads, feed-forward layers and masking. RNNs and CNNs remain useful in other settings."
+      },
+      "examples": [
+        {
+          "id": "schedule",
+          "title": "Find a changing fact",
+          "artifact": "attention-is-all-you-need.html",
+          "description": "Train a small query/key attention head, then change who receives a delivery on which day. The answer should follow the record’s current value.",
+          "comparison": "Compare learned attention, untrained weights and equal weighting. For exact structured records, an ordinary lookup is the simpler production choice; this lab makes learned selection visible.",
+          "command": "node packages/attention-is-all-you-need/cli.mjs"
+        },
+        {
+          "id": "recipes",
+          "title": "Find help · estimate effort",
+          "artifact": "attention-recipes.html",
+          "description": "Two additional problems: rank help articles for a request, or blend estimates from similar projects. Change feature weights and inspect every contribution.",
+          "comparison": "Compare the weighted result with an unweighted average. These examples use explicit features, not learned semantic embeddings; a weighted estimate is a heuristic, not a forecast with measured accuracy.",
+          "command": "node packages/attention-is-all-you-need/recipes-cli.mjs"
+        }
+      ],
+      "architecture": {
+        "title": "The original encoder–decoder Transformer",
+        "source": "https://arxiv.org/html/1706.03762v7",
+        "caption": "Select a block to inspect its role. Arrows show data flow. This is the paper’s broader architecture; our labs isolate attention’s selection and mixing step.",
+        "nodes": [
+          {
+            "id": "input",
+            "label": "Input tokens + positions",
+            "column": 0,
+            "row": 0,
+            "detail": "Token embeddings carry learned representations; positional encodings supply order information. The original model uses sinusoidal encodings."
+          },
+          {
+            "id": "previous",
+            "label": "Previous outputs + positions",
+            "column": 2,
+            "row": 0,
+            "detail": "Shifted output tokens are provided to the decoder. During generation these are the tokens already produced."
+          },
+          {
+            "id": "encoder",
+            "label": "Encoder × 6",
+            "column": 0,
+            "row": 1,
+            "detail": "Each encoder layer has multi-head self-attention and a position-wise feed-forward network, with residual connections and layer normalization around each sublayer."
+          },
+          {
+            "id": "masked",
+            "label": "Masked self-attention",
+            "column": 2,
+            "row": 1,
+            "detail": "The decoder attends to earlier output positions. The mask blocks future positions during training, preventing access to the answer it must predict."
+          },
+          {
+            "id": "cross",
+            "label": "Cross-attention",
+            "column": 1,
+            "row": 2,
+            "detail": "Decoder queries attend to keys and values from the encoder output. This connects a developing output sequence to the input sequence."
+          },
+          {
+            "id": "feedforward",
+            "label": "Feed-forward + residual / norm",
+            "column": 1,
+            "row": 3,
+            "detail": "The decoder also applies a feed-forward network; each sublayer has residual connections and normalization. The masked-attention, cross-attention and feed-forward block repeats six times."
+          },
+          {
+            "id": "output",
+            "label": "Projection → token probabilities",
+            "column": 1,
+            "row": 4,
+            "detail": "A linear projection and softmax produce probabilities over output tokens. Autoregressive generation then feeds a chosen token into the next step."
+          }
+        ],
+        "edges": [
+          {
+            "from": "input",
+            "to": "encoder",
+            "label": "Represent input"
+          },
+          {
+            "from": "previous",
+            "to": "masked",
+            "label": "Represent earlier outputs"
+          },
+          {
+            "from": "encoder",
+            "to": "cross",
+            "label": "Keys and values"
+          },
+          {
+            "from": "masked",
+            "to": "cross",
+            "label": "Queries"
+          },
+          {
+            "from": "cross",
+            "to": "feedforward",
+            "label": "Contextual representation"
+          },
+          {
+            "from": "feedforward",
+            "to": "output",
+            "label": "Decoder output"
+          }
+        ]
+      },
+      "context": [
+        {
+          "decision": "Use it",
+          "situation": "Learn how a model retrieves and mixes context",
+          "recommendation": "Use these small labs to inspect scores, masks, weights and contributions before reading a full model implementation.",
+          "alternative": "For a production language model, start from a maintained implementation and evaluate it on your actual task."
+        },
+        {
+          "decision": "Start simpler",
+          "situation": "Look up an exact customer, name or delivery date",
+          "recommendation": "A map, SQL query or indexed search gives a deterministic answer without training.",
+          "alternative": "Use the schedule lab to study learned matching, not as a replacement for a database."
+        },
+        {
+          "decision": "Start simpler",
+          "situation": "Rank records or estimate from overlapping features",
+          "recommendation": "Compare with a category filter, dot-product ranking or a simple average. Attention adds normalized contributions and a weighted mixture.",
+          "alternative": "Keep the extra mechanism only if held-out outcomes show that it helps. Our hand-authored project features are illustrative."
+        },
+        {
+          "decision": "Avoid here",
+          "situation": "Treat high attention weight as truth or certainty",
+          "recommendation": "A weight shows contribution to this computation. It does not certify that a fact is correct or that an estimate is reliable.",
+          "alternative": "Use source verification and task-specific evaluation; handle missing or contradictory records explicitly."
+        }
+      ]
+    },
+    {
+      "slug": "jev",
+      "title": "Jev",
+      "kind": "system",
+      "authors": [
+        "TypeSafe AI"
+      ],
+      "summary": "Small, typed questions let an application use model answers in ordinary control flow. Explore the public API through a support-routing example with an explicit review policy.",
+      "sourceUrl": "https://docs.typesafe.ai/introduction",
+      "date": "2026-09-20",
+      "version": "Public documentation reviewed September 2026",
+      "category": "Documented systems",
+      "topics": [
+        "Typed decisions",
+        "Agents",
+        "Confidence",
+        "Verification"
+      ],
+      "license": "Vendor documentation; Hopper example code is MIT",
+      "licenseUrl": "https://docs.typesafe.ai/introduction",
+      "relatedProductSlugs": [],
+      "findings": [
+        "The documented API returns typed answers to named questions.",
+        "Choice answers include probabilities and confidence; Noul answers return a scalar."
+      ],
+      "limitations": [
+        "The browser uses authored fixtures, not live model outputs. Jev’s internal architecture and calibration are not reproduced."
+      ],
+      "sections": [
+        {
+          "title": "Ask a question your program can use",
+          "text": "A Choice question proposes one of your named categories. A Noul question supplies a scalar between zero and one. The program decides what to do with those values.",
+          "locator": "TypeSafe introduction and Choice documentation"
+        },
+        {
+          "title": "Keep the decision policy in code",
+          "text": "Validate the response, compare confidence with your chosen threshold, and route uncertain cases to review. Urgency is a separate question; it need not force an uncertain department choice.",
+          "locator": "Confidence and Patterns documentation; Hopper routing policy"
+        },
+        {
+          "title": "Compare integrations fairly",
+          "text": "The general-model JSON path and the typed-answer path use identical authored values and the same validator. They produce the same decision. The difference to inspect is the integration contract, not an invented accuracy contest.",
+          "locator": "Hopper offline example"
+        }
+      ],
+      "diagram": "Request + named questions\n           |\n           v\n  Typed model answers\n           |\n           v\n  Validate shape + values\n           |\n           v\n  Application threshold\n     /             \\\n  Route           Review\n\nUrgency is evaluated independently.",
+      "preview": "QUESTION → TYPED ANSWER → POLICY",
+      "references": [
+        {
+          "title": "Jev quickstart",
+          "url": "https://docs.typesafe.ai/introduction/quickstart",
+          "locator": "Request and response contract",
+          "reason": "The endpoint, authorization and named-question format used by the downloadable client."
+        },
+        {
+          "title": "Choice primitive",
+          "url": "https://docs.typesafe.ai/primitives/choice",
+          "locator": "Choice answer fields",
+          "reason": "Defines categories, probabilities and confidence."
+        },
+        {
+          "title": "Confidence",
+          "url": "https://docs.typesafe.ai/confidence",
+          "locator": "Interpreting confidence",
+          "reason": "Explains the confidence signal. It is not automatically a measured probability of correctness on your task."
+        },
+        {
+          "title": "Patterns",
+          "url": "https://docs.typesafe.ai/patterns",
+          "locator": "Composing questions",
+          "reason": "Small questions and ordinary code compose into larger decisions."
+        }
+      ],
+      "related": [
+        {
+          "slug": "code-as-agent-harness",
+          "reason": "Typed model answers can feed an execution loop. Our examples keep policy and verification explicit; this is an editorial connection, not a documented dependency."
+        }
+      ],
+      "demoScope": "Authored response fixtures compare keyword rules, validated structured JSON and a Jev-shaped response. No provider calls, credentials or model performance measurements in the browser.",
+      "repositoryUrl": "https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations/tree/main/packages/jev",
+      "walkthrough": {
+        "title": "Route a request. Know when to ask for help.",
+        "problem": "A keyword can match a resolved issue rather than the request that remains. A model can propose a route, but software still needs a rule for handling uncertainty.",
+        "outcome": "Compare three paths on the same request. Adjust the confidence threshold, inspect the proposed department, and see when review becomes the outcome.",
+        "experiments": [
+          "Try a request that mentions a login problem already resolved.",
+          "Raise the confidence threshold on a mixed request.",
+          "Edit the response fixture to test validation."
+        ],
+        "application": "Use typed questions for triage, extraction and other bounded decisions. Validate answers at the application boundary, evaluate thresholds against labeled examples from your workflow, and keep a human review path.",
+        "boundary": "This is an independent integration example based on public documentation. Offline fixtures are authored, not recorded model results. The Node client has contract tests with a stub; it has not been qualified with live Jev access. Neither speed nor accuracy is benchmarked here.",
+        "code": "import { evaluateJev } from './packages/jev/client.mjs';\nimport { routeAnswers } from './packages/jev/index.mjs';\n\n// Node only; obtain apiKey from a private file.\nconst response = await evaluateJev(ticket, { apiKey });\nconst decision = routeAnswers(response.answers, { threshold: 0.8 });\nconsole.log(decision); // proposal, not an action",
+        "command": "node packages/jev/cli.mjs mixed"
+      },
+      "institutions": [
+        {
+          "name": "TypeSafe AI",
+          "url": "https://typesafe.ai/"
+        }
+      ],
+      "brief": "Jev’s public interface lets you ask named, typed questions about a state. Choice returns a category with probabilities and confidence; Noul returns a scalar. Your application can validate those answers and compose them with ordinary code into a decision.",
+      "significance": [
+        {
+          "title": "Make the interface explicit",
+          "text": "A named question and a declared answer type give software a clearer contract than parsing an unconstrained paragraph. Structured-output general models can also provide such contracts; the comparison here makes that shared requirement visible.",
+          "url": "https://docs.typesafe.ai/introduction/quickstart",
+          "locator": "Request and response examples; Hopper comparison"
+        },
+        {
+          "title": "Keep policy outside the model",
+          "text": "A proposed category need not trigger an action. The application can apply a threshold and ask for review. Treat confidence as a documented model signal, then evaluate its usefulness on your own labeled cases; it is not automatically a calibrated probability of correctness.",
+          "url": "https://docs.typesafe.ai/confidence",
+          "locator": "Confidence documentation"
+        },
+        {
+          "title": "A documented system, not a paper reproduction",
+          "text": "The useful material here is the public API and its compositional patterns. The browser demonstrates policy using authored fixtures. The downloadable Node client implements that documented request contract; no live-provider result or private model architecture is claimed.",
+          "url": "https://docs.typesafe.ai/patterns",
+          "locator": "Patterns; Hopper integration scope"
+        }
+      ],
+      "comparison": {
+        "before": {
+          "label": "Keyword rule",
+          "steps": [
+            "Scan request",
+            "First matching word",
+            "Fixed route"
+          ]
+        },
+        "after": {
+          "label": "Typed decision workflow",
+          "steps": [
+            "Ask bounded questions",
+            "Validate proposed answers",
+            "Apply policy → route or review"
+          ]
+        },
+        "caption": "The lab also includes a general-model structured JSON path, with identical fixture answers and the same policy. It is an integration comparison, not an accuracy ranking."
+      },
+      "examples": [
+        {
+          "id": "routing",
+          "title": "Route a request · handle uncertainty",
+          "artifact": "jev.html",
+          "description": "Choose a request, inspect the proposed department and change the threshold required for automatic routing. Urgency remains a separate decision.",
+          "comparison": "Three executable paths on one request: keyword rules, validated structured JSON and a Jev-shaped typed answer. Both model paths use the same authored values to avoid inventing a performance difference.",
+          "command": "node packages/jev/cli.mjs mixed"
+        }
+      ],
+      "architecture": {
+        "title": "Typed questions, application-owned decisions",
+        "source": "https://docs.typesafe.ai/introduction/quickstart",
+        "caption": "The documented API boundary and our application policy. Jev’s internal model architecture is not public here. The browser uses authored fixtures at the response boundary.",
+        "nodes": [
+          {
+            "id": "state",
+            "label": "Request + state",
+            "column": 0,
+            "row": 0,
+            "detail": "Provide the text or state to evaluate. In this lab it is a fictional support request."
+          },
+          {
+            "id": "questions",
+            "label": "Named typed questions",
+            "column": 2,
+            "row": 0,
+            "detail": "Ask a Choice question for department and a separate Noul question for urgency. The questions define the interface the program expects."
+          },
+          {
+            "id": "api",
+            "label": "Jev API / offline fixture",
+            "column": 1,
+            "row": 1,
+            "detail": "The downloadable Node client calls the documented TypeSafe endpoint. The browser substitutes explicitly authored answers and makes no provider call."
+          },
+          {
+            "id": "validate",
+            "label": "Validate shape + values",
+            "column": 1,
+            "row": 2,
+            "detail": "Reject unknown choices, invalid numbers or malformed probability distributions. A typed interface does not remove the need to validate a response."
+          },
+          {
+            "id": "policy",
+            "label": "Confidence + urgency policy",
+            "column": 1,
+            "row": 3,
+            "detail": "The application compares confidence with a threshold. Urgency is evaluated separately; an urgent case can still require human triage."
+          },
+          {
+            "id": "route",
+            "label": "Propose route",
+            "column": 0,
+            "row": 4,
+            "detail": "When the threshold is met, propose the department. The example returns a decision; it does not create a ticket or perform an external action."
+          },
+          {
+            "id": "review",
+            "label": "Request review",
+            "column": 2,
+            "row": 4,
+            "detail": "Below the threshold, expose uncertainty rather than silently selecting a department. Evaluate any real policy using labeled cases from your workflow."
+          }
+        ],
+        "edges": [
+          {
+            "from": "state",
+            "to": "api",
+            "label": "State"
+          },
+          {
+            "from": "questions",
+            "to": "api",
+            "label": "Questions"
+          },
+          {
+            "from": "api",
+            "to": "validate",
+            "label": "Typed answers"
+          },
+          {
+            "from": "validate",
+            "to": "policy",
+            "label": "Validated values"
+          },
+          {
+            "from": "policy",
+            "to": "route",
+            "label": "Threshold met"
+          },
+          {
+            "from": "policy",
+            "to": "review",
+            "label": "Below threshold"
+          }
+        ]
+      },
+      "context": [
+        {
+          "decision": "Use it",
+          "situation": "A program needs bounded judgments about unstructured input",
+          "recommendation": "Ask small typed questions, validate the answers and keep the decision policy in code. Evaluate the real API on representative cases first.",
+          "alternative": "The lab demonstrates the interface and policy; the Node client is available for your own account and evaluation."
+        },
+        {
+          "decision": "Start simpler",
+          "situation": "The answer follows an exact rule",
+          "recommendation": "Use ordinary code, a parser or a lookup when the contract is deterministic.",
+          "alternative": "Compare the keyword baseline, then inspect cases where keywords miss context before adding a model."
+        },
+        {
+          "decision": "Start simpler",
+          "situation": "You already have a reliable structured-output model",
+          "recommendation": "Keep it if it satisfies your validation, quality, latency and cost requirements. The two model-shaped paths here deliberately use identical answers.",
+          "alternative": "Measure on the same labeled cases before switching providers; the fixture lab is not a model ranking."
+        },
+        {
+          "decision": "Avoid here",
+          "situation": "An unreviewed model answer would trigger a consequential action",
+          "recommendation": "A confidence value alone is not sufficient authorization or proof of correctness. Keep review and policy controls in the owning application.",
+          "alternative": "Test calibration and failure modes for your task, and separate a proposed decision from executing it."
+        }
+      ]
+    }
+  ]
+}

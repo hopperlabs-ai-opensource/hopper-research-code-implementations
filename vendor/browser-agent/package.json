@@ -1,0 +1,38 @@
+{
+  "name": "hopper-browser-agent",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Local MCP connector for an explicitly paired Hopper browser workspace",
+  "bin": {
+    "hopper-browser-agent": "dist/cli.mjs"
+  },
+  "exports": {
+    ".": "./dist/server.mjs",
+    "./browser": "./browser.mjs"
+  },
+  "files": [
+    "dist",
+    "browser.mjs",
+    "README.md",
+    "LICENSE",
+    "server.mjs",
+    "cli.mjs",
+    "build.mjs",
+    "local.check.mjs",
+    "package-lock.json",
+    "THIRD_PARTY_NOTICES.txt"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "bun test ./local.check.mjs",
+    "build": "bun build.mjs",
+    "check": "bun run test && bun run build"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "esbuild": "0.25.12"
+  }
+}

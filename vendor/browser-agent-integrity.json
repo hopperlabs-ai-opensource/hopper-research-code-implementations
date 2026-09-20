@@ -1,0 +1,12 @@
+{
+  "owner": "hopper-platform/packages/browser-agent-transport/local",
+  "package": "hopper-browser-agent",
+  "version": "0.1.0",
+  "artifact": "hopper-browser-agent-0.1.0.tgz",
+  "sha256": "4323c9caccf1a4b8df6de06a660ab579213256aefd47e5997b5354519e34c299",
+  "files": {
+    "browser.mjs": "c832a298fcfba005164a84cfc278e9878a4bcfeaa9715bb1affa599efa959ce5",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "package.json": "c8856a9cc7e13921588a0b02ed87463dcba452f59bdbe7c62625e59425c62e9f"
+  }
+}

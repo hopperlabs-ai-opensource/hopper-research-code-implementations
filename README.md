@@ -1,5 +1,60 @@
 # Hopper research code implementations
 
+## Three ways to use it
+
+Requires Node.js 22 or newer. The npm-installable packages are distributed from
+this repository's pinned `v0.5.0` release; they are not npm-registry listings.
+No API key, model download or hosted service is needed for the five offline labs.
+
+**Use MCP with Codex**
+
+```sh
+codex mcp add hopper-research -- npx --yes --package=https://raw.githubusercontent.com/hopperlabs-ai-opensource/hopper-research-code-implementations/v0.5.0/release/hopper-research-code-implementations-0.5.0.tgz hopper-research mcp
+```
+
+Reload the client's MCP connection. Ask it to list the research examples, read a
+schema, then run one with explicit inputs. Other MCP clients can launch the same
+`npx` command using their STDIO configuration. `research://catalog` contains the
+three explanations and source links; `research://examples` supplies exact input
+schemas and sample data. Tools run the same core as the CLI and browser.
+
+**Clone and run the source**
+
+```sh
+git clone --branch v0.5.0 --depth 1 https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations.git
+cd hopper-research-code-implementations
+npm run doctor
+npm start
+```
+
+Open the printed loopback address. `npm run mcp` starts MCP from this checkout;
+configure your client to launch `node /absolute/path/to/scripts/cli.mjs mcp`.
+`npm run cli -- run jev --sample` returns JSON. Use `--input input.json` instead of
+`--sample` for your own bounded input. `npm run check` verifies all cores, a real
+MCP handshake, tool results and CLI parity. No dependency installation is required
+for these commands; the local transport's protocol SDK is already bundled.
+
+**Bind either installation to the website**
+
+On the exact Research or Application page, enable agent control and select
+**Connect this page → Prepare local connection**. Copy the generated Codex setup
+or generic MCP configuration. It includes a fresh binding ticket. The browser may
+ask for local-network permission; allow it for the connection you requested.
+A local helper connects only to that page; no Hopper-hosted relay is involved.
+
+Use `page_status`, then `page_describe` and `page_tools`; call a returned operation
+through `page_call`. Research also runs independently without `--bind`. From a
+clone, the copied `node scripts/cli.mjs mcp --bind ...` command has the same behavior.
+The independent `hopper-browser-agent` package uses
+`node vendor/browser-agent/dist/cli.mjs mcp --bind ...` from this clone.
+
+Stop/reload/navigation invalidates the binding. Reconnect with a new generated
+configuration. A previously delivered edit can finish; inspect before retrying.
+The connector sources, license and rebuild instructions are included in
+`vendor/browser-agent`. Product application source and entitlements remain
+separate; this toolkit does not grant private application source access.
+
+
 Practical, inspectable walkthroughs paired with Hopper Research pages.
 Original MIT-licensed educational code. Paper copyright remains with its authors.
 No dependencies, model account, API key or installation step is required.
