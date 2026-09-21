@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { labContracts } from "../packages/lab-bridge/contracts.mjs";
 import { gzipSync, brotliCompressSync } from "node:zlib";
 import { Script } from "node:vm";
+import { supportStarter } from "./build-support-starter.mjs";
 
 const attention = "packages/attention-is-all-you-need";
 const harness = "packages/code-as-agent-harness";
@@ -117,4 +118,5 @@ for (const page of pages) {
 	});
 }
 await writeFile("dist/manifest.json", JSON.stringify(manifest, null, 2) + "\n");
+await writeFile("dist/support-starter.mjs", await supportStarter());
 console.log(JSON.stringify(manifest, null, 2));

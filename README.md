@@ -3,13 +3,13 @@
 ## Three ways to use it
 
 Requires Node.js 22 or newer. The npm-installable packages are distributed from
-this repository's pinned `v0.5.0` release; they are not npm-registry listings.
+this repository's pinned `v0.5.1` release; they are not npm-registry listings.
 No API key, model download or hosted service is needed for the five offline labs.
 
 **Use MCP with Codex**
 
 ```sh
-codex mcp add hopper-research -- npx --yes --package=https://raw.githubusercontent.com/hopperlabs-ai-opensource/hopper-research-code-implementations/v0.5.0/release/hopper-research-code-implementations-0.5.0.tgz hopper-research mcp
+codex mcp add hopper-research -- npx --yes --package=https://raw.githubusercontent.com/hopperlabs-ai-opensource/hopper-research-code-implementations/v0.5.1/release/hopper-research-code-implementations-0.5.1.tgz hopper-research mcp
 ```
 
 Reload the client's MCP connection. Ask it to list the research examples, read a
@@ -21,7 +21,7 @@ schemas and sample data. Tools run the same core as the CLI and browser.
 **Clone and run the source**
 
 ```sh
-git clone --branch v0.5.0 --depth 1 https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations.git
+git clone --branch v0.5.1 --depth 1 https://github.com/hopperlabs-ai-opensource/hopper-research-code-implementations.git
 cd hopper-research-code-implementations
 npm run doctor
 npm start
@@ -126,6 +126,12 @@ navigation and introductory hero when an enclosing page supplies that context.
 The same source, controls, computations and validation run in either presentation.
 
 ## A small codebase you can actually change
+
+For a complete local support workflow, see [the support starter](packages/jev/README.md#use-and-adapt-the-local-hopper-workflow).
+It captures real local Hopper results, preserves a baseline, and compares an
+adapted version on the same labeled tickets. `dist/support-starter.mjs` is a
+self-contained, editable Node download. Real evaluations require the separately
+installed Hopper console; the offline examples and their setup are unchanged.
 
 | Start with | Read | Run |
 | --- | --- | --- |
